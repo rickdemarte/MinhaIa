@@ -1,0 +1,81 @@
+{
+  "openai": {
+    "models": {
+      "fast": {
+        "model": "gpt-4o-mini",
+        "max_tokens": 4096,
+        "description": "rápido e econômico"
+      },
+      "smart": {
+        "model": "gpt-4o",
+        "max_tokens": 16384,
+        "description": "equilibrado"
+      },
+      "smartest": {
+        "model": "o3-mini",
+        "max_tokens": 100000,
+        "description": "raciocínio profundo",
+        "is_o_model": true
+      },
+      "absurdo": {
+        "model": "o3",
+        "max_tokens": 100000,
+        "description": "máximo poder",
+        "is_o_model": true
+      },
+      "default": {
+        "model": "chatgpt-4o-latest",
+        "max_tokens": 8192,
+        "description": "padrão"
+      }
+    }
+  },
+  "deepseek": {
+    "models": {
+      "fast":{
+        "model": "deepseek-chat",
+        "max_tokens":4096,
+        "description":"Modelo Chat simples 4K tokens"
+      },
+      "smart":{
+        "model": "deepseek-reasoner",
+        "max_tokens":32000,
+        "description":"Modelo Reasoner 32K tokens"
+      },
+      "smartest":{
+        "model": "deepseek-reasoner",
+        "max_tokens":64000,
+        "description":"Modelo Chat Reasoner 64K tokens"
+      },
+      "default":{
+        "model": "deepseek-chat",
+        "max_tokens":8192,
+        "description":"Modelo Chat simples 8K tokens"
+      }
+    }
+  },
+  "claude": {
+    "models": {
+      "fast": {
+        "model": "claude-3-haiku-20240307",
+        "max_tokens": 4096,
+        "description": "rápido e econômico"
+      },
+      "smart": {
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 8192,
+        "description": "equilibrado"
+      },
+      "smartest": {
+        "model": "claude-opus-4-20250514",
+        "max_tokens": 8192,
+        "description": "mais inteligente"
+      },
+      "default": {
+        "model": "claude-3-5-sonnet-20241022",
+        "max_tokens": 8192,
+        "description": "padrão"
+      }
+    }
+  }
+}

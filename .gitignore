@@ -1,0 +1,15 @@
+# Ignora arquivos de log
+*.log
+
+# Ignora diretórios de dependências
+node_modules/
+vendor/
+
+# Ignora arquivos de configuração locais
+.env
+config/local.yml
+
+# Ignora arquivos temporários do sistema
+*~
+.DS_Store
+Thumbs.db
