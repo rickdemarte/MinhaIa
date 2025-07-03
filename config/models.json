@@ -32,22 +32,22 @@
   },
   "deepseek": {
     "models": {
-      "fast":{
+      "fast": {
         "model": "deepseek-chat",
         "max_tokens":4096,
         "description":"Modelo Chat simples 4K tokens"
       },
-      "smart":{
+      "smart": {
         "model": "deepseek-reasoner",
         "max_tokens":32000,
         "description":"Modelo Reasoner 32K tokens"
       },
-      "smartest":{
+      "smartest": {
         "model": "deepseek-reasoner",
         "max_tokens":64000,
         "description":"Modelo Chat Reasoner 64K tokens"
       },
-      "default":{
+      "default": {
         "model": "deepseek-chat",
         "max_tokens":8192,
         "description":"Modelo Chat simples 8K tokens"
@@ -75,6 +75,30 @@
         "model": "claude-3-5-sonnet-20241022",
         "max_tokens": 8192,
         "description": "padrão"
+      }
+    }
+  },
+  "qwen":{
+    "models": {
+      "fast": {
+        "model": "qwen-turbo-latest",
+        "max_tokens": 8192,
+        "description": "modelo rápido e econômico para tarefas simples"
+      },
+      "smart": {
+        "model": "qwen-max",
+        "max_tokens": 8192,
+        "description": "maior capacidade de raciocínio, ideal para tarefas complexas"
+      },
+      "smartest": {
+        "model": "qvq-max",
+        "max_tokens": 8192,
+        "description": "Modelo Reasoner 8K tokens"
+      },
+      "default": {
+        "model": "qwen-plus",
+        "max_tokens": 8192,
+        "description": "equilíbrio entre custo e desempenho para tarefas mais complexas"
       }
     }
   }

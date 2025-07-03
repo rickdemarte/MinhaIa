@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from providers.openai_provider import OpenAIProvider
 from providers.claude_provider import ClaudeProvider
 from providers.deepseek_provider import DeepSeekProvider
+from providers.alibaba_provider import Qwen3Provider
 from utils.formatters import remove_markdown, format_as_log
 from utils.file_handlers import processar_arquivo_codigo, processar_arquivo_pdf
 from utils.audio import gerar_audio_openai
@@ -81,9 +82,10 @@ def main():
     
     # Argumentos
     parser.add_argument('mensagem', nargs='?', default='', help='Texto para enviar')
-    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek'], default='openai')
+    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek','qwen'], default='openai')
     parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
     parser.add_argument('--deepseek', action='store_true', help='Usa API da DeepSeek')
+    parser.add_argument('--qwen', action='store_true', help='Usa API da Alibaba')
     parser.add_argument('-t', action='store_true', help='Remove markdown')
     parser.add_argument('-f', type=str, help='Salva em arquivo')
     parser.add_argument('-p', action='store_true', help='Formato log')
@@ -124,6 +126,9 @@ def main():
     if args.deepseek:
         args.provider = 'deepseek'
 
+    if args.qwen:
+        args.provider = 'qwen'
+
     if args.absurdo and args.provider != 'openai':
         print("Erro: --absurdo disponível apenas para OpenAI", file=sys.stderr)
         sys.exit(1)
@@ -161,6 +166,9 @@ def main():
         response = provider.call_api(mensagem, modelo, max_tokens)
     elif args.provider == 'claude':
         provider = ClaudeProvider()
+        response = provider.call_api(mensagem, modelo, max_tokens)
+    elif args.provider == 'qwen':
+        provider = Qwen3Provider()
         response = provider.call_api(mensagem, modelo, max_tokens)
     else:
         provider = OpenAIProvider()
