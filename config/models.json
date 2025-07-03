@@ -101,5 +101,14 @@
         "description": "equilíbrio entre custo e desempenho para tarefas mais complexas"
       }
     }
+  },
+  "dryrun": {
+    "models": {
+      "default": {
+        "model": "Nenhum",
+        "max_tokens": 1,
+        "description": "Modelo apenas para registro para não mecher no código"
+      }
+    }
   }
 }

@@ -82,10 +82,11 @@ def main():
     
     # Argumentos
     parser.add_argument('mensagem', nargs='?', default='', help='Texto para enviar')
-    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek','qwen'], default='openai')
+    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek','qwen', 'dryrun'], default='openai')
     parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
     parser.add_argument('--deepseek', action='store_true', help='Usa API da DeepSeek')
     parser.add_argument('--qwen', action='store_true', help='Usa API da Alibaba')
+    parser.add_argument('--dryrun', action='store_true', help='Não usa nenhuma API de chat')
     parser.add_argument('-t', action='store_true', help='Remove markdown')
     parser.add_argument('-f', type=str, help='Salva em arquivo')
     parser.add_argument('-p', action='store_true', help='Formato log')
@@ -102,6 +103,7 @@ def main():
     # Arquivos
     parser.add_argument('--codigo', type=str)
     parser.add_argument('--pdf', type=str)
+    parser.add_argument('--texto', type=str)
     
     # Outros
     parser.add_argument('--max-tokens', type=int)
@@ -129,11 +131,16 @@ def main():
     if args.qwen:
         args.provider = 'qwen'
 
+    if args.dryrun:
+        args.provider = 'dryrun'
+
     if args.absurdo and args.provider != 'openai':
         print("Erro: --absurdo disponível apenas para OpenAI", file=sys.stderr)
         sys.exit(1)
     
-    if args.voz and args.provider != 'openai':
+    if args.voz and args.dryrun:
+        print("Chamando API de TTS sem chamar o Model antes...")
+    elif args.voz and args.provider != 'openai':
         print("Erro: --voz disponível apenas para OpenAI", file=sys.stderr)
         sys.exit(1)
     
@@ -144,6 +151,9 @@ def main():
         codigo = processar_arquivo_codigo(args.codigo)
         mensagem = f"{mensagem}\n\n### Código fornecido:\n{codigo}"
     
+    if args.texto:
+        mensagem = processar_arquivo_codigo(args.texto)
+
     if args.pdf:
         pdf_content = processar_arquivo_pdf(args.pdf)
         mensagem = f"{mensagem}\n\n### Conteúdo do PDF:\n{pdf_content}"
@@ -170,6 +180,8 @@ def main():
     elif args.provider == 'qwen':
         provider = Qwen3Provider()
         response = provider.call_api(mensagem, modelo, max_tokens)
+    elif args.provider == 'dryrun' and mensagem != '':
+        response = mensagem
     else:
         provider = OpenAIProvider()
         response = provider.call_api(mensagem, modelo, max_tokens, is_o_model=is_o_model)

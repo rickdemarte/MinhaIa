@@ -113,48 +113,6 @@ def dividir_texto_inteligente(texto, limite=3500):
     
     return partes
 
-def concatenar_audios(arquivos_audio, arquivo_saida):
-    """Concatena múltiplos arquivos de áudio em um único arquivo"""
-    try:
-        from pydub import AudioSegment
-    except ImportError:
-        print("Erro: Funcionalidade de concatenação requer biblioteca pydub", file=sys.stderr)
-        print("Instale com: pip install pydub", file=sys.stderr)
-        return False
-    
-    try:
-        print(f"[🔗] Concatenando {len(arquivos_audio)} arquivos de áudio...", file=sys.stderr)
-        
-        # Carrega o primeiro arquivo
-        audio_combinado = AudioSegment.from_mp3(arquivos_audio[0])
-        
-        # Adiciona os demais arquivos
-        for i, arquivo in enumerate(arquivos_audio[1:], 2):
-            print(f"    - Adicionando parte {i}/{len(arquivos_audio)}", file=sys.stderr)
-            audio_parte = AudioSegment.from_mp3(arquivo)
-            # Adiciona um pequeno silêncio entre as partes (500ms)
-            silencio = AudioSegment.silent(duration=500)
-            audio_combinado = audio_combinado + silencio + audio_parte
-        
-        # Exporta o arquivo combinado
-        audio_combinado.export(arquivo_saida, format="mp3")
-        print(f"[✓] Áudio combinado salvo: {arquivo_saida}", file=sys.stderr)
-        
-        # Remove os arquivos temporários
-        print("[🗑️] Removendo arquivos temporários...", file=sys.stderr)
-        for arquivo in arquivos_audio:
-            try:
-                os.remove(arquivo)
-                print(f"    - Removido: {arquivo}", file=sys.stderr)
-            except Exception as e:
-                print(f"    - Erro ao remover {arquivo}: {e}", file=sys.stderr)
-        
-        return True
-        
-    except Exception as e:
-        print(f"[✗] Erro ao concatenar áudios: {e}", file=sys.stderr)
-        return False
-
 def gerar_audio_openai(texto, nome_arquivo="voz.mp3", modelo=DEFAULT_TTS_MODEL, voz=DEFAULT_VOICE, persona=VOICE_INSTRUCTIONS):
     """Gera arquivo(s) MP3 com a resposta usando TTS da OpenAI"""
     try:
@@ -193,45 +151,28 @@ def gerar_audio_openai(texto, nome_arquivo="voz.mp3", modelo=DEFAULT_TTS_MODEL, 
         extensao = path.suffix or '.mp3'
         diretorio = path.parent
         
-        arquivos_temporarios = []
+        arquivos_gerados = []
         
         for i, parte in enumerate(partes, 1):
-            nome_parte = diretorio / f"{nome_base}_parte{i}_temp{extensao}"
+            nome_parte = diretorio / f"{nome_base}_parte{i}{extensao}"
             print(f"\n[🎯] Gerando parte {i}/{len(partes)} ({len(parte)} caracteres)", file=sys.stderr)
-            
-            if _gerar_audio_parte(parte, str(nome_parte), modelo, voz, persona, api_key):
-                arquivos_temporarios.append(str(nome_parte))
-            else:
-                # Se falhar, remove arquivos temporários já criados
-                for arquivo in arquivos_temporarios:
-                    try:
-                        os.remove(arquivo)
-                    except:
-                        pass
-                sys.exit(1)
+            _gerar_audio_parte(parte, str(nome_parte), modelo, voz, persona, api_key)
+            arquivos_gerados.append(str(nome_parte))
         
-        # Concatena os arquivos
-        print(f"\n[🎵] Processando áudio final...", file=sys.stderr)
+        print(f"\n[✓] Áudio dividido em {len(partes)} arquivos:", file=sys.stderr)
+        for arquivo in arquivos_gerados:
+            print(f"    - {arquivo}", file=sys.stderr)
         
-        if concatenar_audios(arquivos_temporarios, nome_arquivo):
-            # Cria arquivo de informações
-            info_file = diretorio / f"{nome_base}_info.txt"
-            with open(info_file, 'w', encoding='utf-8') as f:
-                f.write(f"Áudio gerado a partir de {len(partes)} partes\n")
-                f.write(f"Arquivo final: {nome_arquivo}\n")
-                f.write(f"Tamanho total do texto: {len(texto_limpo)} caracteres\n")
-                f.write(f"Modelo: {modelo}\n")
-                f.write(f"Voz: {voz}\n")
-                f.write(f"Gerado em: {os.path.basename(sys.argv[0])}\n")
-            
-            print(f"[📄] Informações salvas em: {info_file}", file=sys.stderr)
-            print(f"\n[✅] Áudio completo gerado com sucesso!", file=sys.stderr)
-        else:
-            print(f"\n[⚠️] Não foi possível concatenar os áudios.", file=sys.stderr)
-            print(f"[📁] Os arquivos parciais foram mantidos:", file=sys.stderr)
-            for arquivo in arquivos_temporarios:
-                if os.path.exists(arquivo):
-                    print(f"    - {arquivo}", file=sys.stderr)
+        # Cria arquivo de informações
+        info_file = diretorio / f"{nome_base}_info.txt"
+        with open(info_file, 'w', encoding='utf-8') as f:
+            f.write(f"Áudio dividido em {len(partes)} partes:\n\n")
+            for i, arquivo in enumerate(arquivos_gerados, 1):
+                f.write(f"Parte {i}: {arquivo}\n")
+            f.write(f"\nTamanho total do texto: {len(texto_limpo)} caracteres\n")
+            f.write(f"Gerado em: {os.path.basename(sys.argv[0])}\n")
+        
+        print(f"[📄] Informações salvas em: {info_file}", file=sys.stderr)
 
 def _gerar_audio_parte(texto, nome_arquivo, modelo, voz, persona, api_key):
     """Função auxiliar para gerar uma parte do áudio"""
@@ -247,7 +188,6 @@ def _gerar_audio_parte(texto, nome_arquivo, modelo, voz, persona, api_key):
         )
         response.stream_to_file(nome_arquivo)
         print(f"[✓] Áudio salvo: {nome_arquivo}", file=sys.stderr)
-        return True
     except Exception as e:
         print(f"[✗] Erro ao gerar áudio: {e}", file=sys.stderr)
-        return False
+        sys.exit(1)
