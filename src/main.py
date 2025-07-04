@@ -19,6 +19,8 @@ from providers.alibaba_provider import Qwen3Provider
 from utils.formatters import remove_markdown, format_as_log
 from utils.file_handlers import processar_arquivo_codigo, processar_arquivo_pdf
 from utils.audio import gerar_audio_openai
+from utils.polly import gerar_audio_polly
+
 
 def load_models_config():
     """Carrega configuração dos modelos do arquivo JSON"""
@@ -55,6 +57,9 @@ def process_response(response, args):
     if args.voz:
         print(remove_markdown(response))
         gerar_audio_openai(response, args.voz)
+    if args.polly:
+        print(remove_markdown(response))
+        gerar_audio_polly(response, args.polly)
     elif args.t:
         print(remove_markdown(response))
     elif args.f:
@@ -91,6 +96,7 @@ def main():
     parser.add_argument('-f', type=str, help='Salva em arquivo')
     parser.add_argument('-p', action='store_true', help='Formato log')
     parser.add_argument('--voz', type=str, nargs='?', const='voz.mp3')
+    parser.add_argument('--polly', type=str, nargs='?', const='voz.mp3', help='Gera áudio usando Amazon Polly')
     
     # Modelos
     model_group = parser.add_mutually_exclusive_group()
@@ -134,15 +140,20 @@ def main():
     if args.dryrun:
         args.provider = 'dryrun'
 
+    if args.polly and args.voz:
+        print("Erro: --polly e --voz não podem ser usados juntos", file=sys.stderr)
+        sys.exit(1)
+    
     if args.absurdo and args.provider != 'openai':
         print("Erro: --absurdo disponível apenas para OpenAI", file=sys.stderr)
         sys.exit(1)
     
-    if args.voz and args.dryrun:
-        print("Chamando API de TTS sem chamar o Model antes...")
-    elif args.voz and args.provider != 'openai':
-        print("Erro: --voz disponível apenas para OpenAI", file=sys.stderr)
-        sys.exit(1)
+    # Não precisa ser de origem openai, são chamadas separadas
+    #if args.voz and args.dryrun:
+    #    print("Chamando API de TTS sem chamar o Model antes...")
+    #elif args.voz and args.provider != 'openai':
+    #    print("Erro: --voz disponível apenas para OpenAI", file=sys.stderr)
+    #    sys.exit(1)
     
     # Processa mensagem
     mensagem = args.mensagem

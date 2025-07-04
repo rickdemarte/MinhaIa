@@ -27,10 +27,10 @@ show_help() {
 AI CLI - Cliente Unificado para APIs de IA
 
 USO:
-    ai "texto" [opções]
+    chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|claude]  Escolhe o provider (padrão: openai)
+    --provider [openai|claude|deepseek|qwen]  Escolhe o provider (padrão: openai)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
@@ -48,22 +48,25 @@ OPÇÕES DE FORMATAÇÃO:
     -f ARQUIVO                  Salva resposta em arquivo
     -p                          Formata como log do sistema
     --voz [ARQUIVO]             Gera áudio MP3 (apenas OpenAI)
+    --polly [ARQUIVO]           Gera áudio MP3 usando Amazon Polly
 
 OPÇÕES DE ENTRADA:
     --codigo ARQUIVO            Analisa arquivo de código
     --pdf ARQUIVO               Analisa arquivo PDF
 
 EXEMPLOS:
-    ai "Explique firewall"
-    ai "O que é LGPD?" --provider claude --smart
-    ai "Analise este código" --codigo script.py --smartest
-    ai "Resuma" --pdf documento.pdf -f resumo.txt
+    chat "Explique firewall"
+    chat "O que é LGPD?" --provider claude --smart
+    chat "Analise este código" --codigo script.py --smartest
+    chat "Resuma" --pdf documento.pdf -f resumo.txt
 
 VARIÁVEIS DE AMBIENTE:
     OPENAI_API_KEY              Chave da API OpenAI
     ANTHROPIC_API_KEY           Chave da API Anthropic
+    DEEPSEEK_API_KEY            Chave da API DeepSeek
+    QWEN_API_KEY                Chave da API Qwen
 
-Para mais informações: https://github.com/seu-usuario/ai-cli
+Para mais informações: https://github.com/rickdemarte/MinhaIa.git
 EOF
 }
 
@@ -106,7 +109,25 @@ check_dependencies() {
             missing_deps=1
         fi
     done
+
+    # Verifica AWS Cli e credenciais (se existem)
+    echo -e "\n${BLUE}Verificando AWS CLI e credenciais...${NC}"
+    if ! command -v aws &> /dev/null; then
+        echo -e "${RED}✗ AWS CLI não está instalado${NC}"
+        echo "  Instale com: sudo apt install awscli"
+        missing_deps=1
+    else
+        echo -e "${GREEN}✓ AWS CLI encontrado${NC}"
+    fi
     
+    # Verifica arquivo ~/.aws/credentials
+    if [ -f "$HOME/.aws/credentials" ]; then
+        echo -e "${GREEN}✓ Arquivo ~/.aws/credentials encontrado${NC}"
+    else
+        echo -e "${YELLOW}⚠ Arquivo ~/.aws/credentials não encontrado${NC}"
+        echo "    Configure com: aws configure"
+    fi
+
     # Verifica variáveis de ambiente
     echo -e "\n${BLUE}Verificando variáveis de ambiente...${NC}"
     
@@ -124,6 +145,20 @@ check_dependencies() {
         echo "    Configure com: export ANTHROPIC_API_KEY='sua-chave'"
     fi
     
+    if [ -n "$DEEPSEEK_API_KEY" ]; then
+        echo -e "${GREEN}✓ DEEPSEEK_API_KEY configurada${NC}"
+    else
+        echo -e "${YELLOW}⚠ DEEPSEEK_API_KEY não configurada${NC}"
+        echo "    Configure com: export DEEPSEEK_API_KEY='sua-chave'"
+    fi
+
+    if [ -n "$QWEN_API_KEY" ]; then
+        echo -e "${GREEN}✓ QWEN_API_KEY configurada${NC}"
+    else
+        echo -e "${YELLOW}⚠ QWEN_API_KEY não configurada${NC}"
+        echo "    Configure com: export QWEN_API_KEY='sua-chave'"
+    fi
+
     if [ $missing_deps -eq 1 ]; then
         echo -e "\n${YELLOW}Algumas dependências estão faltando.${NC}"
         echo "Execute: $0 --install-deps"
@@ -200,7 +235,12 @@ main() {
             exit 0
             ;;
     esac
-    
+    # verifica se o comando é vazio
+    if [ -z "$COMMAND" ]; then
+        show_help
+        exit 0
+    fi
+
     # Verifica se a estrutura existe
     if [ ! -f "$SCRIPT_DIR/src/main.py" ]; then
         echo -e "${RED}Erro: Arquivo src/main.py não encontrado${NC}"
