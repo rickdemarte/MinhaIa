@@ -53,6 +53,7 @@ OPÇÕES DE FORMATAÇÃO:
 OPÇÕES DE ENTRADA:
     --codigo ARQUIVO            Analisa arquivo de código
     --pdf ARQUIVO               Analisa arquivo PDF
+    --texto ARQUIVO             Lê texto de arquivo
 
 EXEMPLOS:
     chat "Explique firewall"
@@ -235,8 +236,8 @@ main() {
             exit 0
             ;;
     esac
-    # verifica se o comando é vazio
-    if [ -z "$COMMAND" ]; then
+    # verifica se não há mensagem e nenhum argumento
+    if [ -z "$MESSAGE" ] && [ $# -eq 0 ]; then
         show_help
         exit 0
     fi
