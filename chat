@@ -30,11 +30,19 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|claude|deepseek|qwen]  Escolhe o provider (padrão: openai)
+    --provider [openai|claude|deepseek|qwen|grok]  Escolhe o provider (padrão: openai)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
     --install-deps              Instala dependências Python
+    --install-deps-force        Instala dependências Python (forçado usando --break-system-packages)
+
+OPÇÕES DE PROVIDER:
+    --openai                    Usa OpenAI (padrão)
+    --anthropic                 Usa Anthropic
+    --deepseek                  Usa DeepSeek
+    --qwen                      Usa Qwen
+    --grok                      Usa Grok
 
 OPÇÕES DE MODELO:
     --fast                      Modelo rápido e econômico
@@ -102,7 +110,7 @@ check_dependencies() {
     # Verifica bibliotecas Python
     echo -e "\n${BLUE}Verificando bibliotecas Python...${NC}"
     
-    for lib in openai anthropic pdfplumber; do
+    for lib in openai anthropic pdfplumber xai_sdk uvicorn pypub fastapi qwen_sdk boto3; do
         if python3 -c "import $lib" 2>/dev/null; then
             echo -e "${GREEN}✓ $lib instalado${NC}"
         else
@@ -182,7 +190,7 @@ install_dependencies() {
     
     # Instala dependências
     echo "Executando: pip3 install -r $SCRIPT_DIR/requirements.txt"
-    pip3 install -r "$SCRIPT_DIR/requirements.txt"
+    pip3 install -r "$SCRIPT_DIR/requirements.txt $force"
     
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Dependências instaladas com sucesso!${NC}"
@@ -228,6 +236,12 @@ main() {
             exit $?
             ;;
         --install-deps)
+            force=""
+            install_dependencies
+            exit 0
+            ;;
+        --install-deps-force)
+            force="--break-system-packages"
             install_dependencies
             exit 0
             ;;

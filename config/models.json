@@ -6,6 +6,11 @@
         "max_tokens": 4096,
         "description": "rápido e econômico"
       },
+      "cheap": {
+        "model": "gpt-4o-mini",
+        "max_tokens": 4096,
+        "description": "rápido e econômico"
+      },
       "smart": {
         "model": "gpt-4o",
         "max_tokens": 16384,
@@ -37,6 +42,11 @@
         "max_tokens":4096,
         "description":"Modelo Chat simples 4K tokens"
       },
+      "cheap": {
+        "model": "deepseek-chat",
+        "max_tokens":4096,
+        "description":"Modelo Chat simples 4K tokens"
+      },
       "smart": {
         "model": "deepseek-reasoner",
         "max_tokens":32000,
@@ -57,6 +67,11 @@
   "claude": {
     "models": {
       "fast": {
+        "model": "claude-3-haiku-20240307",
+        "max_tokens": 4096,
+        "description": "rápido e econômico"
+      },
+      "cheap": {
         "model": "claude-3-haiku-20240307",
         "max_tokens": 4096,
         "description": "rápido e econômico"
@@ -85,6 +100,11 @@
         "max_tokens": 8192,
         "description": "modelo rápido e econômico para tarefas simples"
       },
+      "cheap": {
+        "model": "qwen-turbo-latest",
+        "max_tokens": 8192,
+        "description": "modelo rápido e econômico para tarefas simples"
+      },
       "smart": {
         "model": "qwen-max",
         "max_tokens": 8192,
@@ -99,6 +119,35 @@
         "model": "qwen-plus",
         "max_tokens": 8192,
         "description": "equilíbrio entre custo e desempenho para tarefas mais complexas"
+      }
+    }
+  },
+  "grok": {
+    "models": {
+      "fast": {
+        "model": "grok-3-fast",
+        "max_tokens": 131072,
+        "description": "Modelo otimizado para velocidade"
+      },
+      "cheap": {
+          "model": "grok-3-mini",
+          "max_tokens": 131072,
+          "description": "Modelo mais econômico para tarefas leves"
+      },
+      "smart": {
+        "model": "grok-3",
+        "max_tokens": 131072,
+        "description": "Modelo padrão para tarefas empresariais"
+      },
+      "smartest": {
+        "model": "grok-3",
+        "max_tokens": 131072,
+        "description": "Melhor modelo não-raciocinante"
+      },
+      "absurdo": {
+        "model": "grok-4-0709",
+        "max_tokens": 256000,
+        "description": "Melhor modelo raciocinante com alta capacidade"
       }
     }
   },

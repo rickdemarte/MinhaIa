@@ -16,11 +16,11 @@ from providers.openai_provider import OpenAIProvider
 from providers.claude_provider import ClaudeProvider
 from providers.deepseek_provider import DeepSeekProvider
 from providers.alibaba_provider import Qwen3Provider
+from providers.grok_provider import GrokProvider
 from utils.formatters import remove_markdown, format_as_log
 from utils.file_handlers import processar_arquivo_codigo, processar_arquivo_pdf
 from utils.audio import gerar_audio_openai
 from utils.polly import gerar_audio_polly
-
 
 def load_models_config():
     """Carrega configuração dos modelos do arquivo JSON"""
@@ -38,6 +38,8 @@ def get_model_config(args, provider, models_config):
     
     if args.fast and 'fast' in provider_models:
         config = provider_models['fast']
+    elif args.cheap and 'cheap' in provider_models:
+        config = provider_models['cheap']
     elif args.smart and 'smart' in provider_models:
         config = provider_models['smart']
     elif args.smartest and 'smartest' in provider_models:
@@ -87,10 +89,11 @@ def main():
     
     # Argumentos
     parser.add_argument('mensagem', nargs='?', default='', help='Texto para enviar')
-    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek','qwen', 'dryrun'], default='openai')
+    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek','qwen', 'dryrun','grok'], default='openai')
     parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
     parser.add_argument('--deepseek', action='store_true', help='Usa API da DeepSeek')
     parser.add_argument('--qwen', action='store_true', help='Usa API da Alibaba')
+    parser.add_argument('--grok', action='store_true', help='Usa API da Grok')
     parser.add_argument('--dryrun', action='store_true', help='Não usa nenhuma API de chat')
     parser.add_argument('-t', action='store_true', help='Remove markdown')
     parser.add_argument('-f', type=str, help='Salva em arquivo')
@@ -101,6 +104,7 @@ def main():
     # Modelos
     model_group = parser.add_mutually_exclusive_group()
     model_group.add_argument('--fast', action='store_true')
+    model_group.add_argument('--cheap', action='store_true')
     model_group.add_argument('--smart', action='store_true')
     model_group.add_argument('--smartest', action='store_true')
     model_group.add_argument('--absurdo', action='store_true')
@@ -137,6 +141,9 @@ def main():
     if args.qwen:
         args.provider = 'qwen'
 
+    if args.grok:
+        args.provider = 'grok'
+    
     if args.dryrun:
         args.provider = 'dryrun'
 
@@ -148,14 +155,6 @@ def main():
         print("Erro: --absurdo disponível apenas para OpenAI", file=sys.stderr)
         sys.exit(1)
     
-    # Não precisa ser de origem openai, são chamadas separadas
-    #if args.voz and args.dryrun:
-    #    print("Chamando API de TTS sem chamar o Model antes...")
-    #elif args.voz and args.provider != 'openai':
-    #    print("Erro: --voz disponível apenas para OpenAI", file=sys.stderr)
-    #    sys.exit(1)
-    
-    # Processa mensagem
     mensagem = args.mensagem
     
     if args.codigo:
@@ -163,6 +162,7 @@ def main():
         mensagem = f"{mensagem}\n\n### Código fornecido:\n{codigo}"
     
     if args.texto:
+        print(f"Ao processar arquivo de texto, o conteúdo da mensagem é ignorado. Se precisar, adicione as orientações no corpo do texto", file=sys.stderr)
         mensagem = processar_arquivo_codigo(args.texto)
 
     if args.pdf:
@@ -190,6 +190,9 @@ def main():
         response = provider.call_api(mensagem, modelo, max_tokens)
     elif args.provider == 'qwen':
         provider = Qwen3Provider()
+        response = provider.call_api(mensagem, modelo, max_tokens)
+    elif args.provider == 'grok':
+        provider = GrokProvider()
         response = provider.call_api(mensagem, modelo, max_tokens)
     elif args.provider == 'dryrun' and mensagem != '':
         response = mensagem
