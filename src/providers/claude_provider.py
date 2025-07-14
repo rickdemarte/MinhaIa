@@ -35,7 +35,7 @@ class ClaudeProvider(BaseProvider):
             response = self.client.messages.create(
                 model=model,
                 max_tokens=max_tokens,
-                system=DEFAULT_SYSTEM_PROMPT,
+                system=kwargs.get("persona",DEFAULT_SYSTEM_PROMPT),
                 messages=[{"role": "user", "content": message}]
             )
             

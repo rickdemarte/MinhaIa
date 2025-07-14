@@ -29,7 +29,8 @@ class OpenAIProvider(BaseProvider):
             self._initialize_client()
         
         try:
-            print(f"Usando modelo OpenAI: {model} (max_tokens: {max_tokens})", file=sys.stderr)
+            personalidade = kwargs.get("persona", DEFAULT_SYSTEM_PROMPT)
+            print(f"Usando modelo OpenAI: {model} - (max_tokens: {max_tokens}) {personalidade}", file=sys.stderr)
             
             if is_o_model:
                 print("Aviso: Modelos O podem levar mais tempo para processar respostas complexas", file=sys.stderr)
@@ -37,7 +38,7 @@ class OpenAIProvider(BaseProvider):
                     model=model,
                     reasoning={"effort": "medium"},
                     input=[
-                        {"role": "system", "content": O_MODEL_SYSTEM_PROMPT},
+                        {"role": "system", "content": kwargs.get("persona",O_MODEL_SYSTEM_PROMPT)},
                         {"role": "user", "content": message}
                     ]
                 )
@@ -46,7 +47,7 @@ class OpenAIProvider(BaseProvider):
                 response = self.client.chat.completions.create(
                     model=model,
                     messages=[
-                        {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
+                        {"role": "system", "content": kwargs.get("persona",DEFAULT_SYSTEM_PROMPT)},
                         {"role": "user", "content": message}
                     ],
                     max_tokens=max_tokens,

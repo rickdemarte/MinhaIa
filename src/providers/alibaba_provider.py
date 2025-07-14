@@ -40,7 +40,7 @@ class Qwen3Provider(BaseProvider):
                     model=model,
                     reasoning={"effort": "medium"},
                     input=[
-                        {"role": "system", "content": O_MODEL_SYSTEM_PROMPT},
+                        {"role": "system", "content": kwargs.get("persona",O_MODEL_SYSTEM_PROMPT)},
                         {"role": "user", "content": message}
                     ]
                 )
@@ -49,7 +49,7 @@ class Qwen3Provider(BaseProvider):
                 response = self.client.chat.completions.create(
                     model=model,
                     messages=[
-                        {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
+                        {"role": "system", "content": kwargs.get("persona",DEFAULT_SYSTEM_PROMPT)},
                         {"role": "user", "content": message}
                     ],
                     max_tokens=max_tokens,

@@ -55,6 +55,10 @@ OPÇÕES DE PROVIDER:
     --qwen                      Usa Qwen
     --grok                      Usa Grok
 
+OPÇÕES DE PERSONALIDADE:
+    --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
+    --code LINGUAGEM            Gera código sem explicações
+
 OPÇÕES DE MODELO:
     --fast                      Modelo rápido e econômico
     --smart                     Modelo equilibrado
@@ -172,6 +176,13 @@ check_dependencies() {
         echo "    Configure com: export DEEPSEEK_API_KEY='sua-chave'"
     fi
 
+    if [ -n "$GROK_API_KEY" ]; then
+        echo -e "${GREEN}✓ GROK_API_KEY configurada${NC}"
+    else
+        echo -e "${YELLOW}⚠ GROK_API_KEY não configurada${NC}"
+        echo "    Configure com: export GROK_API_KEY='sua-chave'"
+    fi
+
     if [ -n "$QWEN_API_KEY" ]; then
         echo -e "${GREEN}✓ QWEN_API_KEY configurada${NC}"
     else
@@ -272,6 +283,10 @@ setup_structure() {
                     ;;
             esac
         done
+
+        echo -e "${BLUE}Executando última verificação...${NC}"
+
+        check_dependencies
       
         exit 0
     fi

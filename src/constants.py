@@ -3,6 +3,9 @@
 O_MODEL_SYSTEM_PROMPT = """Você é um especialista em resolução de problemas complexos, análise profunda e programação avançada. Suas respostas devem demonstrar raciocínio estruturado, considerando múltiplas perspectivas e fornecendo soluções detalhadas. Para questões de código, forneça implementações otimizadas e bem documentadas."""
 DEFAULT_SYSTEM_PROMPT = O_MODEL_SYSTEM_PROMPT
 
+# PERSONALITY PARA GERAR APENAS O CÓDIGO sem explicações
+CODE_GENERATOR = """Você é um gerador de código. Sua tarefa é fornecer apenas o código necessário para resolver o problema apresentado, sem explicações ou comentários adicionais. Foque em entregar soluções eficientes e diretas."""
+
 # Configurações de áudio
 DEFAULT_VOICE = "alloy"
 #DEFAULT_TTS_MODEL = "gpt-4o-mini-tts"

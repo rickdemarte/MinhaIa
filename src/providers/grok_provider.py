@@ -40,7 +40,7 @@ class GrokProvider(BaseProvider):
             model=model,
             temperature=kwargs.get('temperature', 0.7)
             )
-            chat.append(system("Você é um assistente útil criado pela xAI."))
+            chat.append(system(kwargs.get("persona",DEFAULT_SYSTEM_PROMPT)))
             chat.append(user(message))
             max_tokens = kwargs.get('max_tokens', 4096)
             response = chat.sample()

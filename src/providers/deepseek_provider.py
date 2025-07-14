@@ -27,7 +27,7 @@ class DeepSeekProvider(BaseProvider):
         payload = {
             "model": model,
             "messages": [
-                {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
+                {"role": "system", "content": kwargs.get("persona",DEFAULT_SYSTEM_PROMPT)},
                 {"role": "user", "content": message}
             ],
             "max_tokens": max_tokens,

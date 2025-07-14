@@ -115,6 +115,10 @@ def main():
     parser.add_argument('--pdf', type=str)
     parser.add_argument('--texto', type=str)
     
+    # Personalidade ou código
+    parser.add_argument('--persona', type=str, help='Personalidade a ser usada')
+    parser.add_argument('--code', type=str, help='Gerador de código puro, sem explicações')
+
     # Outros
     parser.add_argument('--max-tokens', type=int)
     parser.add_argument('--list-models', action='store_true')
@@ -130,7 +134,7 @@ def main():
                 print(f"  {alias}: {model_config['model']} ({model_config['description']})")
         sys.exit(0)
     
-    # Validações
+    # Validações de providers
 
     if args.claude:
         args.provider = 'claude'
@@ -154,6 +158,19 @@ def main():
     if args.absurdo and args.provider != 'openai':
         print("Erro: --absurdo disponível apenas para OpenAI", file=sys.stderr)
         sys.exit(1)
+    
+    # Validações de personalidade e código
+
+    if args.code:
+        if args.code == None:
+            print("Erro: Ao usar --code é obrigatório informar a linguagem. Exemplo: --code python", file=sys.stderr)
+            sys.exit(1)
+        else:
+            persona = f"Gerador de código {args.code} puro, sem explicações"
+    elif args.persona:
+        persona = args.persona
+    else:
+        persona = ""
     
     mensagem = args.mensagem
     
@@ -184,21 +201,21 @@ def main():
     
     if args.provider == 'deepseek':
         provider = DeepSeekProvider()
-        response = provider.call_api(mensagem, modelo, max_tokens)
+        response = provider.call_api(mensagem, modelo, max_tokens, persona=persona)
     elif args.provider == 'claude':
         provider = ClaudeProvider()
-        response = provider.call_api(mensagem, modelo, max_tokens)
+        response = provider.call_api(mensagem, modelo, max_tokens, persona=persona)
     elif args.provider == 'qwen':
         provider = Qwen3Provider()
-        response = provider.call_api(mensagem, modelo, max_tokens)
+        response = provider.call_api(mensagem, modelo, max_tokens, persona=persona)
     elif args.provider == 'grok':
         provider = GrokProvider()
-        response = provider.call_api(mensagem, modelo, max_tokens)
+        response = provider.call_api(mensagem, modelo, max_tokens, persona=persona)
     elif args.provider == 'dryrun' and mensagem != '':
         response = mensagem
     else:
         provider = OpenAIProvider()
-        response = provider.call_api(mensagem, modelo, max_tokens, is_o_model=is_o_model)
+        response = provider.call_api(mensagem, modelo, max_tokens, is_o_model=is_o_model, persona=persona)
     
     # Processa resposta
     process_response(response, args)
