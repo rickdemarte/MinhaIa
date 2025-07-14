@@ -12,6 +12,12 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Repositório do projeto
+GIT_FROM="github.com"
+REPOSTORIO="rickdemarte"
+PROJETO="MinhaIa"
+
+
 # Diretório base do script - resolve links simbólicos
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -34,6 +40,11 @@ OPÇÕES PRINCIPAIS:
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
+
+OPÇÕES DE CONFIGURAÇÃO / INSTALAÇÃO:
+    --setup [LOCAL]             Cria estrutura inicial do projeto
+    --setup-force [LOCAL]       Cria estrutura inicial do projeto (força instalação removendo diretório existente e forçando instalação de dependências)
+    --check-deps                Verifica dependências do sistema
     --install-deps              Instala dependências Python
     --install-deps-force        Instala dependências Python (forçado usando --break-system-packages)
 
@@ -189,7 +200,7 @@ install_dependencies() {
     fi
     
     # Instala dependências
-    echo "Executando: pip3 install -r $SCRIPT_DIR/requirements.txt"
+    echo "Executando: pip3 install -r $SCRIPT_DIR/requirements.txt $force"
     pip3 install -r "$SCRIPT_DIR/requirements.txt $force"
     
     if [ $? -eq 0 ]; then
@@ -203,24 +214,60 @@ install_dependencies() {
 # Função para criar estrutura inicial se não existir
 setup_structure() {
     if [ ! -d "$SCRIPT_DIR/src" ]; then
-        echo -e "${YELLOW}Estrutura do projeto não encontrada. Criando...${NC}"
         
-        # Cria diretórios
-        mkdir -p "$SCRIPT_DIR"/{config,src/{providers,utils},tests}
+        echo -e "${YELLOW}Estrutura do projeto... Criando...${NC}"
         
-        # Cria arquivo __init__.py vazio nos diretórios Python
-        touch "$SCRIPT_DIR/src/__init__.py"
-        touch "$SCRIPT_DIR/src/providers/__init__.py"
-        touch "$SCRIPT_DIR/src/utils/__init__.py"
+        if [ ! -z $MESSAGE ]; then
+            LOCAL="$MESSAGE/$PROJETO"
+            SCRIPT_DIR="$LOCAL/$PROJETO"
+        else
+            LOCAL="$(pwd)/$PROJETO"
+            echo "Nenhum local fornecido, usando diretório $LOCAL"
+            SCRIPT_DIR="$(pwd)/$PROJETO"
+        fi
         
+        if [ -z $force ]; then
+            # Verifica se o diretório já existe
+            if [ -d "$LOCAL" ]; then
+                echo -e "${RED}Erro: Diretório $LOCAL já existe.${NC}"
+                echo "Use --setup-force para sobrescrever."
+                exit 1
+            fi
+        else
+            # Remove diretório existente se for forçado
+            if [ -d "$LOCAL" ]; then
+                echo -e "${YELLOW}Removendo diretório existente: $LOCAL${NC}"
+                rm -rf "$LOCAL"
+            fi
+        fi
+
+        # Remove barra no final do diretório
+        LOCAL=$(echo "$LOCAL" | sed 's:/*$::')
+
+        echo -e "${YELLOW}Clonando repositório do GitHub para $LOCAL...${NC}"
+
+        git clone git@$GIT_FROM:$REPOSTORIO/$PROJETO $LOCAL
+
         echo -e "${GREEN}✓ Estrutura criada${NC}"
-        echo -e "${YELLOW}Por favor, adicione os arquivos Python necessários em src/${NC}"
-        exit 1
+
+        echo -e "${YELLOW}Acessando o diretório do projeto: $LOCAL${NC}"
+        
+        # Pergunta se deseja instalar dependências
+        read -p "Deseja instalar as dependências agora? (s/n): " resposta
+        if [[ "$resposta" =~ ^[Ss]$ ]]; then
+            cd $LOCAL
+            install_dependencies
+        fi
+        
+        exit 0
     fi
 }
 
 # Função principal
 main() {
+    # Inicializa variáveis
+    force=""
+
     # Verifica argumentos especiais
     case "${1:-}" in
         --help|-h)
@@ -236,7 +283,6 @@ main() {
             exit $?
             ;;
         --install-deps)
-            force=""
             install_dependencies
             exit 0
             ;;
@@ -246,22 +292,30 @@ main() {
             exit 0
             ;;
         --setup)
+            MESSAGE="${2:-}"
+            setup_structure
+            exit 0
+            ;;
+        --setup-force)
+            force="--break-system-packages"
+            MESSAGE="${2:-}"
             setup_structure
             exit 0
             ;;
     esac
+
+    # Verifica se a estrutura existe
+    if [ ! -f "$SCRIPT_DIR/src/main.py" ]; then
+        echo -e "${RED}Erro: Arquivos do sistema não encontrados${NC}"
+        echo "O projeto não está configurado corretamente."
+        echo "Execute: $0 --setup [LOCAL]"
+        exit 1
+    fi
+
     # verifica se não há mensagem e nenhum argumento
     if [ -z "$MESSAGE" ] && [ $# -eq 0 ]; then
         show_help
         exit 0
-    fi
-
-    # Verifica se a estrutura existe
-    if [ ! -f "$SCRIPT_DIR/src/main.py" ]; then
-        echo -e "${RED}Erro: Arquivo src/main.py não encontrado${NC}"
-        echo "O projeto não está configurado corretamente."
-        echo "Execute: $0 --setup"
-        exit 1
     fi
     
     # Verifica Python
