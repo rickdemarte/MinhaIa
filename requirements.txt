@@ -6,4 +6,3 @@ fastapi==0.115.14
 boto3==1.39.3
 xai_sdk
 pypub
-qwen_sdk
