@@ -121,7 +121,7 @@ check_dependencies() {
     # Verifica bibliotecas Python
     echo -e "\n${BLUE}Verificando bibliotecas Python...${NC}"
     
-    for lib in openai anthropic pdfplumber xai_sdk uvicorn pypub fastapi qwen_sdk boto3; do
+    for lib in openai anthropic pdfplumber xai_sdk uvicorn pypub fastapi boto3; do
         if python3 -c "import $lib" 2>/dev/null; then
             echo -e "${GREEN}✓ $lib instalado${NC}"
         else
@@ -192,7 +192,9 @@ check_dependencies() {
 # Função para instalar dependências
 install_dependencies() {
     echo -e "${BLUE}Instalando dependências...${NC}"
-    
+
+    echo -e "${YELLOW}SCRIPT_DIR = $SCRIPT_DIR...${NC}"
+
     # Verifica se requirements.txt existe
     if [ ! -f "$SCRIPT_DIR/requirements.txt" ]; then
         echo -e "${RED}Erro: requirements.txt não encontrado${NC}"
@@ -200,8 +202,8 @@ install_dependencies() {
     fi
     
     # Instala dependências
-    echo "Executando: pip3 install -r $SCRIPT_DIR/requirements.txt $force"
-    pip3 install -r "$SCRIPT_DIR/requirements.txt $force"
+    echo "Executando: pip3 install $force -r $SCRIPT_DIR/requirements.txt"
+    pip3 install $force -r "$SCRIPT_DIR/requirements.txt"
     
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Dependências instaladas com sucesso!${NC}"
@@ -252,13 +254,25 @@ setup_structure() {
 
         echo -e "${YELLOW}Acessando o diretório do projeto: $LOCAL${NC}"
         
-        # Pergunta se deseja instalar dependências
-        read -p "Deseja instalar as dependências agora? (s/n): " resposta
-        if [[ "$resposta" =~ ^[Ss]$ ]]; then
-            cd $LOCAL
-            install_dependencies
-        fi
-        
+        # Pergunta se deseja instalar dependências, só prossegue se o usuário responder corretamente   
+        while true; do
+            read -p "Deseja instalar as dependências agora? (s/n): " resposta
+            case $resposta in
+                [Ss]* ) 
+                    cd $LOCAL
+                    install_dependencies
+                    break
+                    ;;
+                [Nn]* ) 
+                    echo -e "${YELLOW}Script finalizado! Você pode instalar as dependências mais tarde com: $0 --install-deps${NC}"
+                    break
+                    ;;
+                * ) 
+                    echo "Por favor, responda com 's' ou 'n'."
+                    ;;
+            esac
+        done
+      
         exit 0
     fi
 }
