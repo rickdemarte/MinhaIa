@@ -43,3 +43,8 @@ class WhisperProvider(BaseProvider):
     
         return response
     
+    def get_available_models(self):
+        """Retorna a lista de modelos disponíveis para o Whisper"""
+        # Aqui você pode retornar uma lista com os modelos disponíveis.
+        return ["whisper-1", "gpt-4o-transcribe", "gpt-4o-mini-transcribe"]  # Exemplo de modelos
+    

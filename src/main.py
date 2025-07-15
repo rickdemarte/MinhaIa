@@ -40,7 +40,7 @@ def get_model_config(args, provider, models_config):
     provider_models = models_config[provider]['models']
     
     # Verifica se o provider tem modelos configurados
-    if args.transcribe and provider != 'openai':
+    if args.transcribe and provider not in ['openai', 'whisper']:
         return provider_models['transcribe']['bucket_name']
     elif args.fast and 'fast' in provider_models:
         config = provider_models['fast']
@@ -154,6 +154,8 @@ def main():
             sys.exit(1)
         else:
             args.provider = 'aws'
+    elif not args.provider:
+        args.provider = 'openai'
 
     if args.claude:
         args.provider = 'claude'
@@ -211,17 +213,7 @@ def main():
         audiofile = args.transcribe
         media_format = audiofile.split('.')[-1].lower()
         print(f"Transcrevendo áudio: {audiofile} (formato: {media_format})", file=sys.stderr)
-        if args.provider == 'whisper':
-            try:
-                provider = WhisperProvider()
-                response = provider.call_api(audiofile, modelo, max_tokens, persona=persona)
-                print(f"Transcrição concluída\n")
-                process_response(response, args)
-                sys.exit(0)
-            except Exception as e:
-                print(f"Erro ao transcrever áudio:\nErro: {e}", file=sys.stderr)
-                sys.exit(1)
-        else:
+        if args.provider != 'whisper':
             try:
                 response = transcribe_audio_aws(audiofile, language_code="pt-BR", media_format=media_format, bucket_name=get_model_config(args, args.provider, models_config))
                 print(f"Transcrição concluída\n")
@@ -232,7 +224,7 @@ def main():
                 sys.exit(1)
     #elif args.transcribe and args.provider  'aws':
     
-    if not mensagem.strip():
+    if not mensagem.strip() and not args.provider == 'whisper':
         print("Erro: Nenhuma mensagem fornecida", file=sys.stderr)
         sys.exit(1)
     
@@ -246,7 +238,10 @@ def main():
     # Chama API
     print(f"Enviando para {args.provider.upper()}...", file=sys.stderr)
     
-    if args.provider == 'deepseek':
+    if args.provider == 'whisper':
+        provider = WhisperProvider()
+        response = provider.call_api(audiofile, modelo, max_tokens, persona=persona)
+    elif args.provider == 'deepseek':
         provider = DeepSeekProvider()
         response = provider.call_api(mensagem, modelo, max_tokens, persona=persona)
     elif args.provider == 'claude':
