@@ -5,7 +5,7 @@ Cliente unificado para APIs de IA - Ponto de entrada principal
 
 import argparse
 import json
-import os
+#import os
 import sys
 from pathlib import Path
 
@@ -21,6 +21,8 @@ from utils.formatters import remove_markdown, format_as_log
 from utils.file_handlers import processar_arquivo_codigo, processar_arquivo_pdf
 from utils.audio import gerar_audio_openai
 from utils.polly import gerar_audio_polly
+from utils.transcribe import transcribe_audio_aws
+from utils.whisper import WhisperProvider
 
 def load_models_config():
     """Carrega configuração dos modelos do arquivo JSON"""
@@ -34,9 +36,13 @@ def load_models_config():
 
 def get_model_config(args, provider, models_config):
     """Determina qual modelo usar baseado nos argumentos"""
+    print(f"Usando provider: {provider}", file=sys.stderr)
     provider_models = models_config[provider]['models']
     
-    if args.fast and 'fast' in provider_models:
+    # Verifica se o provider tem modelos configurados
+    if args.transcribe and provider != 'openai':
+        return provider_models['transcribe']['bucket_name']
+    elif args.fast and 'fast' in provider_models:
         config = provider_models['fast']
     elif args.cheap and 'cheap' in provider_models:
         config = provider_models['cheap']
@@ -59,7 +65,7 @@ def process_response(response, args):
     if args.voz:
         print(remove_markdown(response))
         gerar_audio_openai(response, args.voz)
-    if args.polly:
+    elif args.polly:
         print(remove_markdown(response))
         gerar_audio_polly(response, args.polly)
     elif args.t:
@@ -79,6 +85,7 @@ def process_response(response, args):
         print(response)
 
 def main():
+
     # Carrega configuração dos modelos
     models_config = load_models_config()
     
@@ -89,7 +96,8 @@ def main():
     
     # Argumentos
     parser.add_argument('mensagem', nargs='?', default='', help='Texto para enviar')
-    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek','qwen', 'dryrun','grok'], default='openai')
+    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek','qwen', 'dryrun','grok'], help='Escolha o provider da API de chat')
+    parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
     parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
     parser.add_argument('--deepseek', action='store_true', help='Usa API da DeepSeek')
     parser.add_argument('--qwen', action='store_true', help='Usa API da Alibaba')
@@ -98,8 +106,11 @@ def main():
     parser.add_argument('-t', action='store_true', help='Remove markdown')
     parser.add_argument('-f', type=str, help='Salva em arquivo')
     parser.add_argument('-p', action='store_true', help='Formato log')
+    
+    # Audio e voz
     parser.add_argument('--voz', type=str, nargs='?', const='voz.mp3')
     parser.add_argument('--polly', type=str, nargs='?', const='voz.mp3', help='Gera áudio usando Amazon Polly')
+    parser.add_argument('--transcribe', type=str, help='Transcreve áudio usando AWS Transcribe')
     
     # Modelos
     model_group = parser.add_mutually_exclusive_group()
@@ -124,7 +135,7 @@ def main():
     parser.add_argument('--list-models', action='store_true')
     
     args = parser.parse_args()
-    
+
     # Lista modelos
     if args.list_models:
         print("\n=== Modelos Disponíveis ===")
@@ -135,6 +146,14 @@ def main():
         sys.exit(0)
     
     # Validações de providers
+    if args.transcribe:
+        if args.provider == 'openai' or args.openai:
+            args.provider = 'whisper'
+        elif args.provider != 'openai':
+            print("Erro: --transcribe só pode ser usado com openai ou sem provider", file=sys.stderr)
+            sys.exit(1)
+        else:
+            args.provider = 'aws'
 
     if args.claude:
         args.provider = 'claude'
@@ -179,16 +198,44 @@ def main():
         mensagem = f"{mensagem}\n\n### Código fornecido:\n{codigo}"
     
     if args.texto:
-        print(f"Ao processar arquivo de texto, o conteúdo da mensagem é ignorado. Se precisar, adicione as orientações no corpo do texto", file=sys.stderr)
+        print(f"{mensagem}\nAo processar arquivo de texto, o conteúdo da mensagem é ignorado. Se precisar, adicione as orientações no corpo do texto", file=sys.stderr)
         mensagem = processar_arquivo_codigo(args.texto)
 
     if args.pdf:
         pdf_content = processar_arquivo_pdf(args.pdf)
         mensagem = f"{mensagem}\n\n### Conteúdo do PDF:\n{pdf_content}"
     
+    # Verifica se o usuário passou um arquivo de áudio para transcrição
+    if args.transcribe:
+        # verifica se o parâmetro --provider openai ou --openai foi passado
+        audiofile = args.transcribe
+        media_format = audiofile.split('.')[-1].lower()
+        print(f"Transcrevendo áudio: {audiofile} (formato: {media_format})", file=sys.stderr)
+        if args.provider == 'whisper':
+            try:
+                provider = WhisperProvider()
+                response = provider.call_api(audiofile, modelo, max_tokens, persona=persona)
+                print(f"Transcrição concluída\n")
+                process_response(response, args)
+                sys.exit(0)
+            except Exception as e:
+                print(f"Erro ao transcrever áudio:\nErro: {e}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            try:
+                response = transcribe_audio_aws(audiofile, language_code="pt-BR", media_format=media_format, bucket_name=get_model_config(args, args.provider, models_config))
+                print(f"Transcrição concluída\n")
+                process_response(response, args)
+                sys.exit(0)
+            except Exception as e:
+                print(f"Erro ao transcrever áudio:\nErro: {e}", file=sys.stderr)
+                sys.exit(1)
+    #elif args.transcribe and args.provider  'aws':
+    
     if not mensagem.strip():
         print("Erro: Nenhuma mensagem fornecida", file=sys.stderr)
         sys.exit(1)
+    
     
     # Configuração do modelo
     modelo, max_tokens, is_o_model = get_model_config(args, args.provider, models_config)

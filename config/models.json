@@ -1,4 +1,37 @@
 {
+  "aws": {
+    "models": {
+      "transcribe": {
+        "model": "transcribe",
+        "max_tokens": 1,
+        "bucket_name": "ribeiro",
+        "description": "Modelo de transcrição de áudio da AWS",
+        "is_transcribe": true
+      }
+    }
+  },
+  "whisper": {
+    "models": {
+      "default": {
+        "model": "whisper-1",
+        "max_tokens": 2000,
+        "description": "Modelo de transcrição de áudio da OpenAI",
+        "is_transcribe": true
+      },
+      "smart": {
+        "model": "gpt-4o-transcribe",
+        "max_tokens": 2000,
+        "description": "Modelo de transcrição de áudio da OpenAI",
+        "is_transcribe": true
+      },
+      "fast": {
+        "model": "gpt-4o-mini-transcribe",
+        "max_tokens": 2000,
+        "description": "Modelo de transcrição de áudio da OpenAI",
+        "is_transcribe": true
+      }
+    }
+  },
   "openai": {
     "models": {
       "fast": {
