@@ -96,7 +96,7 @@ def main():
     
     # Argumentos
     parser.add_argument('mensagem', nargs='?', default='', help='Texto para enviar')
-    parser.add_argument('--provider', choices=['openai', 'claude', 'deepseek','qwen', 'dryrun','grok'], help='Escolha o provider da API de chat')
+    parser.add_argument('--provider', choices=['aws','openai', 'claude', 'deepseek','qwen', 'dryrun','grok','whisper'], help='Escolha o provider da API de chat')
     parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
     parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
     parser.add_argument('--deepseek', action='store_true', help='Usa API da DeepSeek')
@@ -147,11 +147,14 @@ def main():
     
     # Validações de providers
     if args.transcribe:
-        if args.provider == 'openai' or args.openai:
-            args.provider = 'whisper'
-        elif args.provider != 'openai':
-            print("Erro: --transcribe só pode ser usado com openai ou sem provider", file=sys.stderr)
-            sys.exit(1)
+        if args.openai:
+            args.provider = 'openai'
+        if args.provider:
+            if args.provider == 'openai':
+                args.provider = 'whisper'
+            elif args.provider not in ['openai','dryrun']:
+                print(f"Erro: --transcribe só pode ser usado com openai ou sem provider\nVocê forneceu {args.provider}", file=sys.stderr)
+                sys.exit(1)
         else:
             args.provider = 'aws'
     elif not args.provider:
@@ -200,8 +203,7 @@ def main():
         mensagem = f"{mensagem}\n\n### Código fornecido:\n{codigo}"
     
     if args.texto:
-        print(f"{mensagem}\nAo processar arquivo de texto, o conteúdo da mensagem é ignorado. Se precisar, adicione as orientações no corpo do texto", file=sys.stderr)
-        mensagem = processar_arquivo_codigo(args.texto)
+        mensagem = f"{mensagem}\n{processar_arquivo_codigo(args.texto)}"
 
     if args.pdf:
         pdf_content = processar_arquivo_pdf(args.pdf)
@@ -224,9 +226,12 @@ def main():
                 sys.exit(1)
     #elif args.transcribe and args.provider  'aws':
     
-    if not mensagem.strip() and not args.provider == 'whisper':
-        print("Erro: Nenhuma mensagem fornecida", file=sys.stderr)
-        sys.exit(1)
+    if not mensagem.strip():
+        if args.provider == 'whisper':
+            mensagem = "Transcreva esse áudio em português"
+        else:
+            print("Erro: Nenhuma mensagem fornecida", file=sys.stderr)
+            sys.exit(1)
     
     
     # Configuração do modelo
@@ -240,7 +245,7 @@ def main():
     
     if args.provider == 'whisper':
         provider = WhisperProvider()
-        response = provider.call_api(audiofile, modelo, max_tokens, persona=persona)
+        response = provider.call_api(audiofile, mensagem, modelo, max_tokens, persona=persona)
     elif args.provider == 'deepseek':
         provider = DeepSeekProvider()
         response = provider.call_api(mensagem, modelo, max_tokens, persona=persona)
