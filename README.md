@@ -49,7 +49,7 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    ./chat --setup
    ```
 
-   **Recomendo usar a extenção -force para forçar a instação das dependências**
+   **Recomendo usar a extensão -force para forçar a instalação das dependências**
    ```bash
    # Adiciona --break-system-packages ao instalar as dependências em Python
    ./chat --setup-force
@@ -74,7 +74,7 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    ```bash
    ./chat --install-deps
    ```
-   **Recomendo usar a extenção -force para forçar a instação das dependências**
+   **Recomendo usar a extensão -force para forçar a instalação das dependências**
    ```bash
    # Adiciona --break-system-packages
    ./chat --install-deps-force
