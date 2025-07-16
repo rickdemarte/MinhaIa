@@ -105,18 +105,61 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    ```
 
 ### Argumentos de Linha de Comando
-- `mensagem`: Texto a ser enviado para o provedor.
-- `--provider [openai|claude|deepseek|qwen|grok]`: Escolha o provedor (padrão: openai).
-- `--fast`, `--cheap`, `--smart`, `--smartest`, `--absurdo`: Seleciona o modelo desejado.
-- `-t`: Remove markdown da resposta.
-- `-f`: Salva a resposta em um arquivo.
-- `-p`: Formata a resposta como log.
-- `--voz`: Gera áudio da resposta usando OpenAI.
-- `--polly`: Gera áudio da resposta usando Amazon Polly.
-- `--codigo ARQUIVO`: Analisa um arquivo de código.
-- `--pdf ARQUIVO`: Analisa um arquivo PDF.
-- `--code LINGUAGEM`: Gera um código puro, sem explicações
-- `--persona PERSONALIDADE`: Define uma personalidade a ser usada pela IA
+
+```
+USO:
+    chat "texto" [opções]
+
+OPÇÕES DE AJUDA
+    --help, -h                  Mostra esta ajuda
+
+OPÇÕES PRINCIPAIS:
+    --provider                  Escolhe o provider [openai(default)|claude|deepseek|qwen|grok]
+    --version                   Mostra a versão
+    --list-models               Lista modelos disponíveis
+
+OPÇÕES DE CONFIGURAÇÃO / INSTALAÇÃO:
+    --setup [LOCAL]             Cria estrutura inicial do projeto
+    --setup-force [LOCAL]       Cria estrutura inicial do projeto (força instalação removendo diretório existente e forçando instalação de dependências)
+    --check-deps                Verifica dependências do sistema
+    --install-deps              Instala dependências Python
+    --install-deps-force        Instala dependências Python (forçado usando --break-system-packages)
+
+OPÇÕES DE PROVIDER:
+    --openai                    Usa OpenAI (ChatGPT) [default]
+    --anthropic                 Usa Anthropic (Claude.ia)
+    --deepseek                  Usa DeepSeek
+    --qwen                      Usa Qwen3 da Alibaba
+    --grok                      Usa Grok do X (Twitter)
+
+OPÇÕES DE PERSONALIDADE:
+    --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
+    --code LINGUAGEM            Gera código sem explicações (ex: --code javascript)
+
+OPÇÕES DE MODELO:
+    --cheap                     Modelo mais barato. Mesmo que --fast em alguns providers
+    --fast                      Modelo rápido e econômico
+    --smart                     Modelo equilibrado
+    --smartest                  Modelo mais inteligente
+    --absurdo                   Máximo poder, modelo reasoning o3 (apenas provider OpenAI)
+    --model NOME                Especifica modelo customizado
+
+OPÇÕES DE FORMATAÇÃO:
+    -t                          Remove markdown da resposta
+    -f ARQUIVO                  Salva resposta em um arquivo
+    -p                          Formata como log do sistema
+
+OPÇÕES DE VOZ:
+    --voz [ARQUIVO]             Gera áudio MP3 (apenas OpenAI)
+    --polly [ARQUIVO]           Gera áudio MP3 usando Amazon Polly
+    --ouvir                     Reproduz áudio MP3 gerado
+    --transcribe [ARQUIVO]      Transcreve áudio MP3 para texto
+
+OPÇÕES DE ENTRADA:
+    --codigo ARQUIVO            Analisa arquivo de código
+    --pdf ARQUIVO               Analisa arquivo PDF
+    --texto ARQUIVO             Lê texto de arquivo
+```
 
 ### Exemplos de Uso
 Para enviar um arquivo PDF e obter uma resposta:

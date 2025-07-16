@@ -100,8 +100,8 @@ EOF
 
 # Função para mostrar versão
 show_version() {
-    echo "AI CLI v1.0.0"
-    echo "Cliente unificado para OpenAI e Anthropic"
+    echo "AI CLI v4.2.0"
+    echo "Cliente unificado multi IA"
 }
 
 # Função para verificar dependências
