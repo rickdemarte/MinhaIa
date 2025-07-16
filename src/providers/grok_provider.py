@@ -62,4 +62,4 @@ class GrokProvider(BaseProvider):
     
     def get_available_models(self):
         """Retorna modelos disponíveis"""
-        return ["grok-3-fast", "grok-3-mini", "grok-3","grok4grok-4-0709"]
+        return ["grok-3-fast", "grok-3-mini", "grok-3","grok-4-0709"]

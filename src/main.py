@@ -19,7 +19,7 @@ from providers.alibaba_provider import Qwen3Provider
 from providers.grok_provider import GrokProvider
 from utils.formatters import remove_markdown, format_as_log
 from utils.file_handlers import processar_arquivo_codigo, processar_arquivo_pdf
-from utils.audio import gerar_audio_openai
+from utils.audio import OpenAIAudio
 from utils.polly import gerar_audio_polly
 from utils.transcribe import transcribe_audio_aws
 from utils.whisper import WhisperProvider
@@ -64,7 +64,8 @@ def process_response(response, args):
     """Processa e exibe a resposta conforme os parâmetros"""
     if args.voz:
         print(remove_markdown(response))
-        gerar_audio_openai(response, args.voz)
+        provider = OpenAIAudio()
+        provider.call_api(response, args.voz)
     elif args.polly:
         print(remove_markdown(response))
         gerar_audio_polly(response, args.polly)
