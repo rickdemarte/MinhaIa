@@ -12,13 +12,10 @@ from providers.deepseek_provider import DeepSeekProvider
 from providers.alibaba_provider import Qwen3Provider
 from providers.grok_provider import GrokProvider
 from providers.openaiWhisper_provider import WhisperProvider
-from providers.openaiTTS_provider import OpenAIAudio
-from providers.AWSpolly_provider import AWSPollyProvider
 from providers.AWStranscribe_provider import AWSTranscribeProvider
 
 from utils.argumentos import CLIArgumentParser
-from utils.formatters import remove_markdown, format_as_log
-from utils.file_handlers import processar_arquivo_codigo, processar_arquivo_pdf
+from utils.handlers import ResponseHandler as handler
 
 
 def load_models_config():
@@ -57,37 +54,6 @@ def get_model_config(args, provider, models_config):
     
     return config['model'], config['max_tokens'], config.get('is_o_model', False)
 
-def process_response(response, args):
-    """Processa e exibe a resposta conforme os parâmetros"""
-    audio_file = None
-    if args.voz:
-        print(remove_markdown(response))
-        provider = OpenAIAudio()
-        audio_file = provider.call_api(response, args.voz)
-    elif args.polly:
-        print(remove_markdown(response))
-        provider = AWSPollyProvider()
-        audio_file = provider.call_api(response, args.polly)
-    elif args.t:
-        print(remove_markdown(response))
-    elif args.f:
-        try:
-            with open(args.f, 'w', encoding='utf-8') as f:
-                f.write(response)
-            print(f"Resposta salva em: {args.f}", file=sys.stderr)
-        except IOError as e:
-            print(f"Erro ao salvar arquivo: {e}", file=sys.stderr)
-            sys.exit(1)
-    elif args.p:
-        provider_log = "openai" if args.provider == 'openai' else "claude"
-        print(format_as_log(response, provider=provider_log))
-    else:
-        print(response)
-    
-    if audio_file and args.ouvir:
-        print(f"Reproduzindo áudio: {audio_file}", file=sys.stderr)
-        os.system(f"mpg123 {audio_file} > /dev/null 2>&1")
-
 def main():
     # Carrega configuração dos modelos
     models_config = load_models_config()
@@ -108,14 +74,14 @@ def main():
     mensagem = args.mensagem
     
     if args.codigo:
-        codigo = processar_arquivo_codigo(args.codigo)
+        codigo = handler.processar_arquivo_codigo(args.codigo)
         mensagem = f"{mensagem}\n\n### Código fornecido:\n{codigo}"
     
     if args.texto:
-        mensagem = f"{mensagem}\n{processar_arquivo_codigo(args.texto)}"
+        mensagem = f"{mensagem}\n{handler.processar_arquivo_codigo(args.texto)}"
 
     if args.pdf:
-        pdf_content = processar_arquivo_pdf(args.pdf)
+        pdf_content = handler.processar_arquivo_pdf(args.pdf)
         mensagem = f"{mensagem}\n\n### Conteúdo do PDF:\n{pdf_content}"
     
     # Verifica se o usuário passou um arquivo de áudio para transcrição
@@ -129,7 +95,7 @@ def main():
                 response = provider.call_api(audiofile, language_code="pt-BR", media_format=media_format, 
                                            bucket_name=get_model_config(args, args.provider, models_config))
                 print(f"Transcrição concluída\n")
-                process_response(response, args)
+                handler.process_response(response, args)
                 sys.exit(0)
             except Exception as e:
                 print(f"Erro ao transcrever áudio:\nErro: {e}", file=sys.stderr)
@@ -173,7 +139,7 @@ def main():
         response = provider.call_api(mensagem, modelo, max_tokens, is_o_model=is_o_model, persona=args.persona)
     
     # Processa resposta
-    process_response(response, args)
+    handler.process_response(response, args)
 
 if __name__ == "__main__":
     main()
