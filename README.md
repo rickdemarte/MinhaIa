@@ -17,18 +17,24 @@ AI CLI é um cliente unificado que permite a interação com várias APIs de int
 │
 ├── src
 │   ├── providers
-│   │   ├── openai_provider.py
+│   │   ├── alibaba_provider.py
+│   │   ├── AWSpolly_provider.py
+│   │   ├── AWStranscribe_provider.py
+│   │   ├── base.py
 │   │   ├── claude_provider.py
 │   │   ├── deepseek_provider.py
-│   │   ├── alibaba_provider.py
-│   │   └── grok_provider.py
+│   │   ├── grok_provider.py
+│   │   ├── openai_provider.py
+│   │   ├── openaiTTS_provider.py
+│   │   ├── openaiWhisper_provider.py
 │   ├── utils
 │   │   ├── formatters.py
 │   │   ├── file_handlers.py
-│   │   └── audio.py
 │   └── main.py
-└── config
-    └── models.json
+├── config
+│   └── models.json
+└── tests
+    └── [arquivos de teste, não soncronizados]
 ```
 
 ## Requisitos
