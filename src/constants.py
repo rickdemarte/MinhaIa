@@ -14,3 +14,22 @@ DEFAULT_TTS_MODEL = "gpt-4o-mini-tts"
 #DEFAULT_TTS_MODEL = "tts-1-hd"
 DEFAULT_AUDIO_FILE = "voz.mp3"
 VOICE_INSTRUCTIONS = "Você é um professor que fala clara e pausadamente"
+
+# Constantes para AWS Polly
+DEFAULT_VOICE_ID = "Vitoria"  # Voz brasileira feminina
+DEFAULT_ENGINE = "neural"  # 'standard' ou 'neural'
+DEFAULT_OUTPUT_FORMAT = "mp3"
+DEFAULT_SAMPLE_RATE = "24000"
+DEFAULT_LANGUAGE_CODE = "pt-BR"
+
+# Mapeamento de vozes por idioma
+VOICE_MAPPING = {
+    "pt-BR": {
+        "female": ["Camila", "Vitoria"],
+        "male": ["Ricardo", "Thiago"]
+    },
+    "en-US": {
+        "female": ["Joanna", "Kendra", "Kimberly", "Salli", "Joey", "Ivy"],
+        "male": ["Matthew", "Justin", "Kevin"]
+    }
+}

@@ -70,8 +70,12 @@ OPÇÕES DE FORMATAÇÃO:
     -t                          Remove markdown da resposta
     -f ARQUIVO                  Salva resposta em arquivo
     -p                          Formata como log do sistema
+
+OPÇÕES DE VOZ:
     --voz [ARQUIVO]             Gera áudio MP3 (apenas OpenAI)
     --polly [ARQUIVO]           Gera áudio MP3 usando Amazon Polly
+    --ouvir                     Reproduz áudio MP3 gerado
+    --transcribe [ARQUIVO]      Transcreve áudio MP3 para texto
 
 OPÇÕES DE ENTRADA:
     --codigo ARQUIVO            Analisa arquivo de código

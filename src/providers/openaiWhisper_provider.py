@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 from pydub import AudioSegment
 from pydub.utils import mediainfo
-from providers.base import BaseProvider
+from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT, O_MODEL_SYSTEM_PROMPT
 
 MAX_DURATION_SECONDS = 1450

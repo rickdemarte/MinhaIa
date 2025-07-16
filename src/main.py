@@ -5,7 +5,7 @@ Cliente unificado para APIs de IA - Ponto de entrada principal
 
 import argparse
 import json
-#import os
+import os
 import sys
 from pathlib import Path
 
@@ -17,12 +17,14 @@ from providers.claude_provider import ClaudeProvider
 from providers.deepseek_provider import DeepSeekProvider
 from providers.alibaba_provider import Qwen3Provider
 from providers.grok_provider import GrokProvider
+from providers.openaiWhisper_provider import WhisperProvider
+from providers.openaiTTS_provider import OpenAIAudio
+from providers.AWSpolly_provider import AWSPollyProvider
+from providers.AWStranscribe_provider import AWSTranscribeProvider
+
 from utils.formatters import remove_markdown, format_as_log
 from utils.file_handlers import processar_arquivo_codigo, processar_arquivo_pdf
-from utils.audio import OpenAIAudio
-from utils.polly import gerar_audio_polly
-from utils.transcribe import transcribe_audio_aws
-from utils.whisper import WhisperProvider
+
 
 def load_models_config():
     """Carrega configuração dos modelos do arquivo JSON"""
@@ -62,13 +64,15 @@ def get_model_config(args, provider, models_config):
 
 def process_response(response, args):
     """Processa e exibe a resposta conforme os parâmetros"""
+    audio_file = None
     if args.voz:
         print(remove_markdown(response))
         provider = OpenAIAudio()
-        provider.call_api(response, args.voz)
+        audio_file = provider.call_api(response, args.voz)
     elif args.polly:
         print(remove_markdown(response))
-        gerar_audio_polly(response, args.polly)
+        provider = AWSPollyProvider()
+        audio_file = provider.call_api(response, args.polly)
     elif args.t:
         print(remove_markdown(response))
     elif args.f:
@@ -84,6 +88,10 @@ def process_response(response, args):
         print(format_as_log(response, provider=provider_log))
     else:
         print(response)
+    
+    if audio_file and args.ouvir:
+        print(f"Reproduzindo áudio: {audio_file}", file=sys.stderr)
+        os.system(f"mpg123 {audio_file} > /dev/null 2>&1")
 
 def main():
 
@@ -112,7 +120,8 @@ def main():
     parser.add_argument('--voz', type=str, nargs='?', const='voz.mp3')
     parser.add_argument('--polly', type=str, nargs='?', const='voz.mp3', help='Gera áudio usando Amazon Polly')
     parser.add_argument('--transcribe', type=str, help='Transcreve áudio usando AWS Transcribe')
-    
+    parser.add_argument('--ouvir', action='store_true', help='Reproduz áudio MP3 gerado')
+
     # Modelos
     model_group = parser.add_mutually_exclusive_group()
     model_group.add_argument('--fast', action='store_true')
@@ -197,6 +206,9 @@ def main():
     else:
         persona = ""
     
+    # Exibe todos os argumentos
+    #print(f"Argumentos fornecidos: {args}", file=sys.stderr)
+
     mensagem = args.mensagem
     
     if args.codigo:
@@ -218,7 +230,8 @@ def main():
         print(f"Transcrevendo áudio: {audiofile} (formato: {media_format})", file=sys.stderr)
         if args.provider != 'whisper':
             try:
-                response = transcribe_audio_aws(audiofile, language_code="pt-BR", media_format=media_format, bucket_name=get_model_config(args, args.provider, models_config))
+                provider = AWSTranscribeProvider()
+                response = provider.call_api(audiofile, language_code="pt-BR", media_format=media_format, bucket_name=get_model_config(args, args.provider, models_config))
                 print(f"Transcrição concluída\n")
                 process_response(response, args)
                 sys.exit(0)
