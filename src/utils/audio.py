@@ -239,13 +239,12 @@ def _gerar_audio_parte(texto, nome_arquivo, modelo, voz, persona, api_key):
         from openai import OpenAI
         client = OpenAI(api_key=api_key)
         
-        response = client.audio.speech.create(
+        with client.audio.speech.with_streaming_response.create(
             model=modelo,
             voice=voz,
-            instructions=persona,
             input=texto
-        )
-        response.stream_to_file(nome_arquivo)
+        ) as response:
+            response.stream_to_file(nome_arquivo)
         print(f"[✓] Áudio salvo: {nome_arquivo}", file=sys.stderr)
         return True
     except Exception as e:

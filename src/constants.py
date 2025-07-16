@@ -8,8 +8,8 @@ CODE_GENERATOR = """Você é um gerador de código. Sua tarefa é fornecer apena
 
 # Configurações de áudio
 DEFAULT_VOICE = "alloy"
-#DEFAULT_TTS_MODEL = "gpt-4o-mini-tts"
-DEFAULT_TTS_MODEL = "tts-1"
+DEFAULT_TTS_MODEL = "gpt-4o-mini-tts"
+#DEFAULT_TTS_MODEL = "tts-1"
 #DEFAULT_TTS_MODEL = "tts-1-hd"
 DEFAULT_AUDIO_FILE = "voz.mp3"
 VOICE_INSTRUCTIONS = "Você é um professor que fala clara e pausadamente"
