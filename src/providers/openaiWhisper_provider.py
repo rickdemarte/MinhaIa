@@ -3,8 +3,25 @@ import sys
 import openai
 import tempfile
 from pathlib import Path
-from pydub import AudioSegment
-from pydub.utils import mediainfo
+
+# Verificação de dependências para manipulação de áudio
+try:
+    from pydub import AudioSegment
+    from pydub.utils import mediainfo
+except ImportError as e:
+    print(f"Erro ao importar pydub: {e}", file=sys.stderr)
+    print("Instale as dependências necessárias:", file=sys.stderr)
+    print("pip install pydub", file=sys.stderr)
+    print("Para Linux: sudo apt-get install python3-dev libasound2-dev", file=sys.stderr)
+    print("Para manipulação de MP3: sudo apt-get install ffmpeg libavcodec-extra", file=sys.stderr)
+    sys.exit(1)
+
+# Alternativa ao pydub para metadados
+try:
+    from mutagen.mp3 import MP3
+except ImportError:
+    print("Aviso: mutagen não está instalado. Execute: pip install mutagen", file=sys.stderr)
+
 from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT, O_MODEL_SYSTEM_PROMPT
 
@@ -35,6 +52,14 @@ class WhisperProvider(BaseProvider):
         Divide o arquivo de áudio em segmentos menores se necessário.
         Melhorado para evitar erros de arquivo corrompido.
         """
+        # Verifica se ffmpeg está instalado
+        try:
+            import subprocess
+            subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+        except (FileNotFoundError, subprocess.SubprocessError):
+            print("Erro: ffmpeg não encontrado. Instale com: sudo apt-get install ffmpeg", file=sys.stderr)
+            print("Ou use: brew install ffmpeg (macOS)", file=sys.stderr)
+            sys.exit(1)
         try:
             # Tenta detectar o formato do arquivo automaticamente
             file_info = mediainfo(audio_file_path)

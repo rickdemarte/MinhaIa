@@ -136,7 +136,7 @@ class OpenAIAudio(BaseProvider):
         
         return partes
 
-    def concatenar_audios(arquivos_audio, arquivo_saida):
+    def concatenar_audios(self,arquivos_audio, arquivo_saida):
         """Concatena múltiplos arquivos de áudio em um único arquivo"""
         try:
             from pydub import AudioSegment
@@ -180,15 +180,10 @@ class OpenAIAudio(BaseProvider):
 
     def call_api(self, texto, nome_arquivo="voz.mp3", modelo=DEFAULT_TTS_MODEL, voz=DEFAULT_VOICE, persona=VOICE_INSTRUCTIONS):
         """Gera arquivo(s) MP3 com a resposta usando TTS da OpenAI"""
-        try:
-            from openai import OpenAI
-        except ImportError:
-            print("Erro: Funcionalidade de voz requer biblioteca OpenAI", file=sys.stderr)
-            sys.exit(1)
         
         if not self.client:
             self._initialize_client()
-                
+        
         # Limpa o texto antes de processar
         texto_limpo = self.limpar_texto_para_audio(texto)
         
@@ -202,7 +197,7 @@ class OpenAIAudio(BaseProvider):
         if len(partes) == 1:
             # Texto cabe em um único arquivo
             print(f"[📝] Texto preparado para áudio ({len(texto_limpo)} caracteres)", file=sys.stderr)
-            self._gerar_audio_parte(texto_limpo, nome_arquivo, modelo, voz, persona, self.api_key)
+            self._gerar_audio_parte(texto_limpo, nome_arquivo, modelo, voz, persona)
         else:
             # Texto precisa ser dividido
             print(f"[📝] Texto muito grande ({len(texto_limpo)} caracteres)", file=sys.stderr)
@@ -220,7 +215,7 @@ class OpenAIAudio(BaseProvider):
                 nome_parte = diretorio / f"{nome_base}_parte{i}_temp{extensao}"
                 print(f"\n[🎯] Gerando parte {i}/{len(partes)} ({len(parte)} caracteres)", file=sys.stderr)
 
-                if self._gerar_audio_parte(parte, str(nome_parte), modelo, voz, extensao.lstrip('.').lower(), persona, self.api_key):
+                if self._gerar_audio_parte(parte, str(nome_parte), modelo, voz, extensao.lstrip('.').lower(), persona):
                     arquivos_temporarios.append(str(nome_parte))
                 else:
                     # Se falhar, remove arquivos temporários já criados
@@ -257,8 +252,8 @@ class OpenAIAudio(BaseProvider):
     def _gerar_audio_parte(self, texto, nome_arquivo, modelo, voz, extensao, persona):
         """Função auxiliar para gerar uma parte do áudio"""
         try:
-            from openai import OpenAI
-            client = OpenAI(api_key=self.api_key)
+
+            client = self.client
 
             response = client.audio.speech.create(
                 model=modelo,
