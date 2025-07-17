@@ -3,6 +3,7 @@ import sys
 import openai
 import tempfile
 from pathlib import Path
+from utils.error_handler import SecureErrorHandler
 
 # Verificação de dependências para manipulação de áudio
 try:
@@ -15,12 +16,6 @@ except ImportError as e:
     print("Para Linux: sudo apt-get install python3-dev libasound2-dev", file=sys.stderr)
     print("Para manipulação de MP3: sudo apt-get install ffmpeg libavcodec-extra", file=sys.stderr)
     sys.exit(1)
-
-# Alternativa ao pydub para metadados
-try:
-    from mutagen.mp3 import MP3
-except ImportError:
-    print("Aviso: mutagen não está instalado. Execute: pip install mutagen", file=sys.stderr)
 
 from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT, O_MODEL_SYSTEM_PROMPT
@@ -37,12 +32,14 @@ class WhisperProvider(BaseProvider):
     def _initialize_client(self):
         """Inicializa o cliente OpenAI"""
         if not self.api_key:
-            print("Erro: Variável de ambiente OPENAI_API_KEY não encontrada", file=sys.stderr)
-            sys.exit(1)
+            SecureErrorHandler.handle_error(
+                "api_key_missing",
+                Exception("OPENAI_API_KEY not found"),
+                context={"provider": "openai_whisper"}
+            )
         
         try:
-            from openai import OpenAI
-            self.client = OpenAI(api_key=self.api_key)
+            self.client = openai.OpenAI(api_key=self.api_key)
         except ImportError:
             print("Erro: Biblioteca 'openai' não instalada. Execute: pip install openai", file=sys.stderr)
             sys.exit(1)
@@ -144,7 +141,12 @@ class WhisperProvider(BaseProvider):
             self._initialize_client()
         
         if not Path(audio_file_path).is_file():
-            print(f"Erro: Arquivo de áudio '{audio_file_path}' não encontrado", file=sys.stderr)
+            SecureErrorHandler.handle_error(
+                "file_not_found",
+                FileNotFoundError(f"Audio file not found: {SecureErrorHandler.sanitize_path(audio_file_path)}"),
+                context={"provider": "openai_whisper"},
+                exit_code=0
+            )
             return None
         
         try:
@@ -175,8 +177,14 @@ class WhisperProvider(BaseProvider):
                             full_response += str(response).strip() + " "
                         
                 except Exception as e:
-                    print(f"Erro ao processar segmento {segment_path}: {e}", file=sys.stderr)
-                    # Continua com os próximos segmentos em vez de parar
+                    # Log error but continue processing
+                    SecureErrorHandler.handle_error(
+                        "api_error",
+                        e,
+                        context={"provider": "openai_whisper", "segment": idx+1},
+                        exit_code=0,
+                        show_hint=False
+                    )
                     continue
                 finally:
                     # Remove arquivo temporário se não for o original
@@ -189,8 +197,11 @@ class WhisperProvider(BaseProvider):
             return full_response.strip()
             
         except Exception as e:
-            print(f"Erro na chamada da API OpenAI: {e}", file=sys.stderr)
-            sys.exit(1)
+            SecureErrorHandler.handle_error(
+                "api_error",
+                e,
+                context={"provider": "openai_whisper", "model": modelo}
+            )
     
     def get_available_models(self):
         return ["whisper-1", "gpt-4o-transcribe", "gpt-4o-mini-transcribe"]

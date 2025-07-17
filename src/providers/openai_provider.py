@@ -2,6 +2,7 @@ import os
 import sys
 from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT, O_MODEL_SYSTEM_PROMPT
+from utils.error_handler import SecureErrorHandler
 
 class OpenAIProvider(BaseProvider):
     """Provider para OpenAI API"""
@@ -13,15 +14,21 @@ class OpenAIProvider(BaseProvider):
     def _initialize_client(self):
         """Inicializa o cliente OpenAI"""
         if not self.api_key:
-            print("Erro: Variável de ambiente OPENAI_API_KEY não encontrada", file=sys.stderr)
-            sys.exit(1)
+            SecureErrorHandler.handle_error(
+                "api_key_missing",
+                Exception("OPENAI_API_KEY not found"),
+                context={"provider": "openai"}
+            )
         
         try:
             from openai import OpenAI
             self.client = OpenAI(api_key=self.api_key)
-        except ImportError:
-            print("Erro: Biblioteca 'openai' não instalada. Execute: pip install openai", file=sys.stderr)
-            sys.exit(1)
+        except ImportError as e:
+            SecureErrorHandler.handle_error(
+                "dependency_missing",
+                e,
+                context={"provider": "openai", "library": "openai"}
+            )
     
     def call_api(self, message, model, max_tokens, is_o_model=False, **kwargs):
         """Chama a API da OpenAI"""
@@ -56,8 +63,11 @@ class OpenAIProvider(BaseProvider):
                 return response.choices[0].message.content.strip()
                 
         except Exception as e:
-            print(f"Erro na chamada da API OpenAI: {e}", file=sys.stderr)
-            sys.exit(1)
+            SecureErrorHandler.handle_error(
+                "api_error",
+                e,
+                context={"provider": "openai", "model": model}
+            )
     
     def _extrair_texto_resposta_o_model(self, response):
         """Extrai texto da resposta dos modelos O"""

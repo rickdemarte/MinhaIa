@@ -2,6 +2,7 @@ import os
 import sys
 from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT
+from utils.error_handler import SecureErrorHandler
 
 import requests
 
@@ -15,9 +16,11 @@ class DeepSeekProvider(BaseProvider):
     def call_api(self, message, model, max_tokens, **kwargs):
         """Chama a API do DeepSeek"""
         if not self.api_key:
-            print("Erro: Variável de ambiente DEEPSEEK_API_KEY não encontrada", file=sys.stderr)
-            print("Execute: export DEEPSEEK_API_KEY='sua_chave_aqui'", file=sys.stderr)
-            sys.exit(1)
+            SecureErrorHandler.handle_error(
+                "api_key_missing",
+                Exception("DEEPSEEK_API_KEY not found"),
+                context={"provider": "deepseek"}
+            )
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -40,15 +43,35 @@ class DeepSeekProvider(BaseProvider):
             response = requests.post(self.api_url, headers=headers, json=payload)
             
             if response.status_code != 200:
-                print(f"Erro na resposta da API DeepSeek: {response.status_code} - {response.text}", file=sys.stderr)
-                sys.exit(1)
+                error_msg = f"API returned status {response.status_code}"
+                if response.status_code == 429:
+                    SecureErrorHandler.handle_error(
+                        "rate_limit",
+                        Exception(error_msg),
+                        context={"provider": "deepseek", "status_code": response.status_code}
+                    )
+                else:
+                    SecureErrorHandler.handle_error(
+                        "api_error",
+                        Exception(error_msg),
+                        context={"provider": "deepseek", "status_code": response.status_code}
+                    )
             
             data = response.json()
             return data['choices'][0]['message']['content']
         
+        except requests.exceptions.ConnectionError as e:
+            SecureErrorHandler.handle_error(
+                "network_error",
+                e,
+                context={"provider": "deepseek"}
+            )
         except Exception as e:
-            print(f"Erro na chamada da API DeepSeek: {e}", file=sys.stderr)
-            sys.exit(1)
+            SecureErrorHandler.handle_error(
+                "api_error",
+                e,
+                context={"provider": "deepseek", "model": model}
+            )
 
     def get_available_models(self):
         """Retorna modelos disponíveis da DeepSeek"""
