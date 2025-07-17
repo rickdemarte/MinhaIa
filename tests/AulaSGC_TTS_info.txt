@@ -1,6 +1,0 @@
-Áudio gerado a partir de 2 partes
-Arquivo final: tests/AulaSGC_TTS.mp3
-Tamanho total do texto: 4272 caracteres
-Modelo: gpt-4o-mini-tts
-Voz: alloy
-Gerado em: main.py

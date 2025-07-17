@@ -1,8 +1,0 @@
-Áudio gerado a partir de 2 partes
-Arquivo final: tests/AulaSGC.mp3
-Tamanho total do texto: 4272 caracteres
-Serviço: AWS Polly
-Voz: Vitoria
-Engine: neural
-Idioma: pt-BR
-Gerado em: main.py
