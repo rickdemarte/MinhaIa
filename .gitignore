@@ -1,15 +1,9 @@
-# Ignora arquivos de log
+.gitignore
 *.log
-
-# Ignora diretórios de dependências
-node_modules/
-vendor/
-
-# Ignora arquivos de configuração locais
 .env
-config/local.yml
-
-# Ignora arquivos temporários do sistema
 *~
 .DS_Store
 Thumbs.db
+**/__pycache__
+tests/
+voice-chat/node_modules/
