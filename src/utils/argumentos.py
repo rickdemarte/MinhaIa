@@ -20,13 +20,14 @@ class CLIArgumentParser:
         
         # Providers
         parser.add_argument('--provider', 
-                          choices=['aws', 'openai', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper'], 
+                          choices=['aws', 'openai', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper','groq'], 
                           help='Escolha o provider da API de chat')
         parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
         parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
         parser.add_argument('--deepseek', action='store_true', help='Usa API da DeepSeek')
         parser.add_argument('--qwen', action='store_true', help='Usa API da Alibaba')
         parser.add_argument('--grok', action='store_true', help='Usa API da Grok')
+        parser.add_argument('--groq', action='store_true', help='Usa API da Groq')
         parser.add_argument('--dryrun', action='store_true', help='Não usa nenhuma API de chat')
         
         # Formatação de saída
@@ -113,6 +114,8 @@ class CLIArgumentParser:
             args.provider = 'grok'
         elif args.dryrun:
             args.provider = 'dryrun'
+        elif args.groq:
+            args.provider = 'groq'
     
     def _process_persona(self, args):
         """Processa personalidade e código"""

@@ -5,6 +5,8 @@ from providers.alibaba_provider import Qwen3Provider
 from providers.grok_provider import GrokProvider
 from providers.openaiWhisper_provider import WhisperProvider
 from providers.AWStranscribe_provider import AWSTranscribeProvider
+from providers.groq_provider import GroqProvider
+
 
 
 class ProviderFactory:
@@ -17,7 +19,8 @@ class ProviderFactory:
         'qwen': Qwen3Provider,
         'grok': GrokProvider,
         'whisper': WhisperProvider,
-        'aws_transcribe': AWSTranscribeProvider
+        'aws_transcribe': AWSTranscribeProvider,
+        'groq': GroqProvider
     }
     
     @classmethod

@@ -263,7 +263,7 @@ setup_structure() {
 
         echo -e "${YELLOW}Clonando repositório do GitHub para $LOCAL...${NC}"
 
-        git clone git@$GIT_FROM:$REPOSTORIO/$PROJETO $LOCAL
+        git clone https://github.com/rickdemarte/MinhaIa.git $LOCAL
 
         echo -e "${GREEN}✓ Estrutura criada${NC}"
 

@@ -3,6 +3,7 @@ import sys
 
 from providers.openaiTTS_provider import OpenAIAudio
 from providers.AWSpolly_provider import AWSPollyProvider
+from providers.groqTTS_provider import GroqProviderTTS
 from utils.formatters import remove_markdown, format_as_log
 
 
@@ -47,9 +48,19 @@ class ResponseHandler:
         """Processa e exibe a resposta conforme os parâmetros"""
         audio_file = None
         if args.voz:
-            print(remove_markdown(response))
-            provider = OpenAIAudio()
-            audio_file = provider.call_api(response, args.voz)
+            print(f"Mensagem original: \n {response}", file=sys.stderr)
+            if args.provider == 'groq' or args.groq:
+                provider = GroqProviderTTS()
+                audio_file = provider.call_api(response, args.voz)
+            elif args.provider == 'openai':
+                provider = OpenAIAudio()
+                audio_file = provider.call_api(response, args.voz)
+            elif args.provider == 'aws':
+                provider = AWSPollyProvider()
+                audio_file = provider.call_api(response, args.voz)
+            else:
+                print(f"Erro: Provedor de voz '{args.provider}' não suportado.", file=sys.stderr)
+                sys.exit(1)
         elif args.polly:
             print(remove_markdown(response))
             provider = AWSPollyProvider()

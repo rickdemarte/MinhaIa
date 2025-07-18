@@ -184,6 +184,35 @@
       }
     }
   },
+  "groq": {
+    "models": {
+      "absurdo": {
+        "model": "deepseek-r1-distill-llama-70b",
+        "max_tokens": 131072,
+        "description": "Modelo DeepSeek R1 destilado em Llama 70B"
+      },
+      "fast": {
+        "model": "llama-3.1-8b-instant",
+        "max_tokens": 131072,
+        "description": "Modelo Llama 3.1 8B instantâneo"
+      },
+      "smart": {
+        "model": "mistral-saba-24b",
+        "max_tokens": 32768,
+        "description": "Modelo Mistral Saba 24B otimizado para velocidade"
+      },
+      "smartest": {
+        "model": "qwen/qwen3-32b",
+        "max_tokens": 40960,
+        "description": "Modelo Qwen 3 32B com alta capacidade de raciocínio"
+      },
+      "default": {
+        "model": "llama-3.3-70b-versatile",
+        "max_tokens": 32768,
+        "description": "Modelo Llama 3.3 70B versátil"
+      }
+    }
+  },
   "dryrun": {
     "models": {
       "default": {

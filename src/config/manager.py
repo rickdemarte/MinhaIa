@@ -42,6 +42,8 @@ class ConfigManager:
             config = provider_models['smart']
         elif args.smartest and 'smartest' in provider_models:
             config = provider_models['smartest']
+        elif args.absurdo and provider == 'groq' and 'absurdo' in provider_models:
+            config = provider_models['absurdo']
         elif args.absurdo and provider == 'openai' and 'absurdo' in provider_models:
             config = provider_models['absurdo']
         elif args.model:
