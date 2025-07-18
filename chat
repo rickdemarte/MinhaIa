@@ -54,6 +54,7 @@ OPÇÕES DE PROVIDER:
     --deepseek                  Usa DeepSeek
     --qwen                      Usa Qwen
     --grok                      Usa Grok
+    --groq                      Usa Groq
 
 OPÇÕES DE PERSONALIDADE:
     --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
@@ -73,6 +74,7 @@ OPÇÕES DE FORMATAÇÃO:
 
 OPÇÕES DE VOZ:
     --voz [ARQUIVO]             Gera áudio MP3 (apenas OpenAI)
+    --voz [ARQUIVO] --groq      Gera áudio MP3 usando Groq (playai-tts)
     --polly [ARQUIVO]           Gera áudio MP3 usando Amazon Polly
     --ouvir                     Reproduz áudio MP3 gerado
     --transcribe [ARQUIVO]      Transcreve áudio MP3 para texto
@@ -93,6 +95,8 @@ VARIÁVEIS DE AMBIENTE:
     ANTHROPIC_API_KEY           Chave da API Anthropic
     DEEPSEEK_API_KEY            Chave da API DeepSeek
     QWEN_API_KEY                Chave da API Qwen
+    GROK_API_KEY                Chave da API Grok
+    GROQ_API_KEY                Chave da API Groq
 
 Para mais informações: https://github.com/rickdemarte/MinhaIa.git
 EOF
