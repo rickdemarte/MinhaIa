@@ -14,27 +14,50 @@ AI CLI é um cliente unificado que permite a interação com várias APIs de int
 
 ## Estrutura do Projeto
 ```
-│
+/
+├── chat [Aplicativo em bash]
+├── docs
+│   ├── SECURE_ERROR_HANDLING.md
+│   ├── CLAUDE.md
+│   └── ...
+├── requirements.txt
+├── config
+│   ├── models.json
+│   └── ...
+├── tests [arquivos de teste, não soncronizados]
 ├── src
+│   ├── utils
+│   │   ├── error_handler.py
+│   │   ├── formatters.py
+│   │   ├── argumentos.py
+│   │   ├── handlers.py
+│   │   └── ...
 │   ├── providers
-│   │   ├── alibaba_provider.py
-│   │   ├── AWSpolly_provider.py
-│   │   ├── AWStranscribe_provider.py
-│   │   ├── base.py
-│   │   ├── claude_provider.py
 │   │   ├── deepseek_provider.py
-│   │   ├── grok_provider.py
-│   │   ├── openai_provider.py
+│   │   ├── base.py
 │   │   ├── openaiTTS_provider.py
 │   │   ├── openaiWhisper_provider.py
-│   ├── utils
-│   │   ├── formatters.py
-│   │   ├── file_handlers.py
-│   └── main.py
-├── config
-│   └── models.json
-└── tests
-    └── [arquivos de teste, não soncronizados]
+│   │   ├── openai_provider.py
+│   │   ├── groq_provider.py
+│   │   ├── factory.py
+│   │   ├── AWSpolly_provider.py
+│   │   ├── alibaba_provider.py
+│   │   ├── grok_provider.py
+│   │   ├── claude_provider.py
+│   │   ├── groqTTS_provider.py
+│   │   ├── AWStranscribe_provider.py
+│   │   └── ...
+│   ├── processors
+│   │   ├── message_processor.py
+│   │   └── ...
+│   ├── constants.py
+│   ├── main.py
+│   ├── config
+│   │   ├── manager.py
+│   │   └── ...
+│   └── ...
+├── README.md
+└── 
 ```
 
 ## Requisitos
@@ -93,6 +116,7 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    - `DEEPSEEK_API_KEY`: Chave da API DeepSeek.
    - `QWEN_API_KEY`: Chave da API Qwen.
    - `GROK_API_KEY`: Chave da API Grok.
+   - `GROQ_API_KEY`: Chave da API Groq.
 
 5. **Execute o cliente**:
    ```bash
@@ -110,11 +134,9 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
 USO:
     chat "texto" [opções]
 
-OPÇÕES DE AJUDA
-    --help, -h                  Mostra esta ajuda
-
 OPÇÕES PRINCIPAIS:
-    --provider                  Escolhe o provider [openai(default)|claude|deepseek|qwen|grok]
+    --provider [openai|claude|deepseek|qwen|grok]  Escolhe o provider (padrão: openai)
+    --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
 
@@ -126,31 +148,32 @@ OPÇÕES DE CONFIGURAÇÃO / INSTALAÇÃO:
     --install-deps-force        Instala dependências Python (forçado usando --break-system-packages)
 
 OPÇÕES DE PROVIDER:
-    --openai                    Usa OpenAI (ChatGPT) [default]
-    --anthropic                 Usa Anthropic (Claude.ia)
+    --openai                    Usa OpenAI (padrão)
+    --anthropic                 Usa Anthropic
     --deepseek                  Usa DeepSeek
-    --qwen                      Usa Qwen3 da Alibaba
-    --grok                      Usa Grok do X (Twitter)
+    --qwen                      Usa Qwen
+    --grok                      Usa Grok
+    --groq                      Usa Groq
 
 OPÇÕES DE PERSONALIDADE:
     --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
-    --code LINGUAGEM            Gera código sem explicações (ex: --code javascript)
+    --code LINGUAGEM            Gera código sem explicações
 
 OPÇÕES DE MODELO:
-    --cheap                     Modelo mais barato. Mesmo que --fast em alguns providers
     --fast                      Modelo rápido e econômico
     --smart                     Modelo equilibrado
     --smartest                  Modelo mais inteligente
-    --absurdo                   Máximo poder, modelo reasoning o3 (apenas provider OpenAI)
+    --absurdo                   Máximo poder (apenas OpenAI)
     --model NOME                Especifica modelo customizado
 
 OPÇÕES DE FORMATAÇÃO:
     -t                          Remove markdown da resposta
-    -f ARQUIVO                  Salva resposta em um arquivo
+    -f ARQUIVO                  Salva resposta em arquivo
     -p                          Formata como log do sistema
 
 OPÇÕES DE VOZ:
     --voz [ARQUIVO]             Gera áudio MP3 (apenas OpenAI)
+    --voz [ARQUIVO] --groq      Gera áudio MP3 usando Groq (playai-tts)
     --polly [ARQUIVO]           Gera áudio MP3 usando Amazon Polly
     --ouvir                     Reproduz áudio MP3 gerado
     --transcribe [ARQUIVO]      Transcreve áudio MP3 para texto
@@ -159,6 +182,21 @@ OPÇÕES DE ENTRADA:
     --codigo ARQUIVO            Analisa arquivo de código
     --pdf ARQUIVO               Analisa arquivo PDF
     --texto ARQUIVO             Lê texto de arquivo
+
+EXEMPLOS:
+    chat "Explique firewall"
+    chat "O que é LGPD?" --provider claude --smart
+    chat "Analise este código" --codigo script.py --smartest
+    chat "Resuma" --pdf documento.pdf -f resumo.txt
+
+VARIÁVEIS DE AMBIENTE:
+    OPENAI_API_KEY              Chave da API OpenAI
+    ANTHROPIC_API_KEY           Chave da API Anthropic
+    DEEPSEEK_API_KEY            Chave da API DeepSeek
+    QWEN_API_KEY                Chave da API Qwen
+    GROK_API_KEY                Chave da API Grok
+    GROQ_API_KEY                Chave da API Groq
+
 ```
 
 ### Exemplos de Uso
