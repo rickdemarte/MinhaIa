@@ -21,6 +21,7 @@ class CLIArgumentParser:
         # Providers
         parser.add_argument('--provider', 
                           choices=['aws', 'openai', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper','groq'], 
+                          default='groq',
                           help='Escolha o provider da API de chat')
         parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
         parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
@@ -98,8 +99,8 @@ class CLIArgumentParser:
             sys.exit(1)
         
         # Validação para modelo absurdo
-        if args.absurdo and args.provider != 'openai':
-            print("Erro: --absurdo disponível apenas para OpenAI", file=sys.stderr)
+        if args.absurdo and args.provider not in ['openai', 'groq']:
+            print("Erro: --absurdo disponível apenas para OpenAI e Groq", file=sys.stderr)
             sys.exit(1)
     
     def _process_provider_shortcuts(self, args):
@@ -116,6 +117,8 @@ class CLIArgumentParser:
             args.provider = 'dryrun'
         elif args.groq:
             args.provider = 'groq'
+        elif args.openai:
+            args.provider = 'openai'
     
     def _process_persona(self, args):
         """Processa personalidade e código"""

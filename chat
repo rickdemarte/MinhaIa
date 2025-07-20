@@ -46,6 +46,7 @@ OPÇÕES DE CONFIGURAÇÃO / INSTALAÇÃO:
     --setup-force [LOCAL]       Cria estrutura inicial do projeto (força instalação removendo diretório existente e forçando instalação de dependências)
     --check-deps                Verifica dependências do sistema
     --install-deps              Instala dependências Python
+    --install-deps-venv         Instala dependências Python em um ambiente virtual
     --install-deps-force        Instala dependências Python (forçado usando --break-system-packages)
 
 OPÇÕES DE PROVIDER:
@@ -133,7 +134,7 @@ check_dependencies() {
     # Verifica bibliotecas Python
     echo -e "\n${BLUE}Verificando bibliotecas Python...${NC}"
     
-    for lib in openai anthropic pdfplumber xai_sdk pydub boto3; do
+    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq; do
         if python3 -c "import $lib" 2>/dev/null; then
             echo -e "${GREEN}✓ $lib instalado${NC}"
         else
@@ -208,6 +209,27 @@ check_dependencies() {
     fi
 }
 
+# Função para criar ambiente virtual
+cria_venv() {
+    echo -e "${BLUE}Criando ambiente virtual...${NC}"
+
+    # Verifica se o diretório do script existe
+    if [ ! -d "$SCRIPT_DIR" ]; then
+        echo -e "${RED}Erro: Diretório do script não encontrado: $SCRIPT_DIR${NC}"
+        exit 1
+    fi
+
+    # Cria o ambiente virtual
+    python3 -m venv "$SCRIPT_DIR/vpython"
+
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✓ Ambiente virtual criado com sucesso!${NC}"
+        source "$SCRIPT_DIR/vpython/bin/activate"
+    else
+        echo -e "${RED}✗ Erro ao criar ambiente virtual${NC}"
+        exit 1
+    fi
+}
 # Função para instalar dependências
 install_dependencies() {
     echo -e "${BLUE}Instalando dependências...${NC}"
@@ -323,6 +345,11 @@ main() {
             install_dependencies
             exit 0
             ;;
+        --install-deps-venv)
+            cria_venv
+            install_dependencies
+            exit 0
+            ;;
         --install-deps-force)
             force="--break-system-packages"
             install_dependencies
@@ -363,8 +390,20 @@ main() {
     fi
     
     # Ativa ambiente virtual se existir
-    if [ -d "$SCRIPT_DIR/venv" ]; then
-        source "$SCRIPT_DIR/venv/bin/activate"
+    if [ -d "$SCRIPT_DIR/vpython" ]; then
+        if [ -z "$VIRTUAL_ENV" ]; then
+            echo -e "${YELLOW}Ambiente virtual encontrado, mas não ativado.${NC}"
+            echo -e "${GREEN}Ativando ambiente virtual...${NC}"
+            source "$SCRIPT_DIR/vpython/bin/activate"
+        else
+            echo -e "${GREEN}Ambiente virtual já está ativo.${NC}"
+        fi
+    else
+        # Cria ambiente virtual se não existir
+        cria_venv
+        echo -e "${GREEN}Ambiente virtual criado e ativado.${NC}"
+        echo -e "${BLUE}Ativando ambiente virtual...${NC}"
+        source "$SCRIPT_DIR/vpython/bin/activate"
     fi
     
     # Adiciona o diretório do script ao PYTHONPATH
