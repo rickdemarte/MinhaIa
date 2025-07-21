@@ -31,7 +31,8 @@ class SecureErrorHandler:
         "network_error": "Erro de conexão de rede.",
         "rate_limit": "Limite de requisições excedido. Aguarde antes de tentar novamente.",
         "invalid_format": "Formato de arquivo não suportado.",
-        "generic": "Ocorreu um erro inesperado. Consulte os logs para mais detalhes."
+        "generic": "Ocorreu um erro inesperado. Consulte os logs para mais detalhes.",
+        "API": "Erro na API. Verifique a configuração e tente novamente."
     }
     
     @staticmethod

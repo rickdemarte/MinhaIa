@@ -9,6 +9,7 @@ from config.manager import ConfigManager
 from processors.message_processor import MessageProcessor
 from utils.argumentos import CLIArgumentParser
 from utils.handlers import ResponseHandler as handler
+from API import start_text_api
 
 
 class AIController:
@@ -70,15 +71,28 @@ class AIController:
         # Process response
         handler.process_response(response, args)
 
+
 def main():
-    """Main entry point for the AI CLI"""
-    # Parse arguments
-    cli_parser = CLIArgumentParser()
-    args = cli_parser.parse_args()
-    
-    # Initialize and run controller
-    controller = AIController()
-    controller.run(args)
+    """Main entry point for the AI CLI ou API"""
+    import argparse
+    parser = argparse.ArgumentParser(
+            description="Cliente unificado para APIs de IA",
+            formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument('--online', action='store_true', help='Inicia a API FastAPI')
+    parser.add_argument('--host', type=str, help='Host para a API (default: 0.0.0.0)')
+    parser.add_argument('--port', type=int, help='Porta para a API (default: 8000)')
+    parser.add_argument('--secure', action='store_true', help='Usa chaves de API para autenticação')
+    args, _ = parser.parse_known_args()
+
+    if args.online:
+        start_text_api(args.host or '0.0.0.0', args.port or 8000)
+    else:
+        # CLI tradicional
+        cli_parser = CLIArgumentParser()
+        args = cli_parser.parse_args()
+        controller = AIController()
+        controller.run(args)
 
 if __name__ == "__main__":
     main()

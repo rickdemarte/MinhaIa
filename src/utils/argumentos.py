@@ -18,6 +18,12 @@ class CLIArgumentParser:
         # Argumento principal
         parser.add_argument('mensagem', nargs='?', default='', help='Texto para enviar')
         
+        # Argumentos de configuração de API
+        parser.add_argument('--online', action='store_true', help='Inicia a API FastAPI')
+        parser.add_argument('--port', type=int, default=8000, help='Porta da API FastAPI')
+        parser.add_argument('--host', type=str, default='0.0.0.0', help='Host da API FastAPI')
+        parser.add_argument('--secure', action='store_true', help='Usa chaves de API para autenticação')
+
         # Providers
         parser.add_argument('--provider', 
                           choices=['aws', 'openai', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper','groq'], 

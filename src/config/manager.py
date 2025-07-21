@@ -30,8 +30,9 @@ class ConfigManager:
         provider_models = models_config[provider]['models']
         
         # Handle transcription
-        if args.transcribe and provider not in ['openai', 'whisper']:
-            return provider_models['transcribe']['bucket_name'], 0, False
+        if args.transcribe:
+            if provider not in ['openai', 'whisper']:
+                return provider_models['transcribe']['bucket_name'], 0, False
         
         # Handle model tier selection
         if args.fast and 'fast' in provider_models:
