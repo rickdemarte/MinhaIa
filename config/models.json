@@ -100,13 +100,13 @@
   "claude": {
     "models": {
       "fast": {
-        "model": "claude-3-haiku-20240307",
-        "max_tokens": 4096,
+        "model": "claude-3-5-haiku-20241022",
+        "max_tokens": 8192,
         "description": "rápido e econômico"
       },
       "cheap": {
-        "model": "claude-3-haiku-20240307",
-        "max_tokens": 4096,
+        "model": "claude-3-5-haiku-20241022",
+        "max_tokens": 8192,
         "description": "rápido e econômico"
       },
       "smart": {
@@ -120,8 +120,8 @@
         "description": "mais inteligente"
       },
       "default": {
-        "model": "claude-3-5-sonnet-20241022",
-        "max_tokens": 8192,
+        "model": "claude-3-7-sonnet-20250219",
+        "max_tokens": 64000,
         "description": "padrão"
       }
     }

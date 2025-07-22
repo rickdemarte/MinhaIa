@@ -35,7 +35,7 @@ def trata_mensagem(req: MessageRequest, chave: str = Header(None)):
         from os import path, getenv
         import ast
         load_dotenv(path.join(path.dirname(__file__), 'api.env'))
-        raw_keys = getenv('API_KEYS', '')
+        raw_keys = getenv('RIBEIRO_API_KEYS', '')
         # Remove espaços e aspas extras, suporta formato JSON ou CSV
         if raw_keys.strip().startswith('['):
             chaves = ast.literal_eval(raw_keys)
