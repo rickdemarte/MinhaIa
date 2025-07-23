@@ -196,10 +196,15 @@
         "max_tokens": 131072,
         "description": "Modelo Llama 3.1 8B instantâneo"
       },
+      "cheap":{
+        "model": "meta-llama/llama-4-maverick-17b-128e-instruct",
+        "max_tokens": 8192,
+        "description": "Versão “maverick”: mais qualidade que o Scout, ainda barata"
+      },
       "smart": {
         "model": "mistral-saba-24b",
         "max_tokens": 32768,
-        "description": "Modelo Mistral Saba 24B otimizado para velocidade"
+        "description": "Modelo Mistral Saba 24B otimizado para conversação"
       },
       "smartest": {
         "model": "qwen/qwen3-32b",

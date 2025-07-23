@@ -2,44 +2,43 @@ import os
 import sys
 from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT
+from langchain_anthropic import ChatAnthropic
+from langchain_core.language_models.chat_models import BaseChatModel
 
 class ClaudeProvider(BaseProvider):
-    """Provider para Anthropic Claude API"""
+    """Provider para Anthropic Claude API usando LangChain"""
     
     def __init__(self):
         super().__init__(api_key=os.getenv('ANTHROPIC_API_KEY'))
-        self.client = None
+        self.model = None
+        self.max_tokens = None
     
-    def _initialize_client(self):
-        """Inicializa o cliente Anthropic"""
+    def _initialize_llm(self) -> BaseChatModel:
+        """Inicializa o modelo Claude LangChain"""
         if not self.api_key:
             print("Erro: Variável de ambiente ANTHROPIC_API_KEY não encontrada", file=sys.stderr)
             print("Execute: export ANTHROPIC_API_KEY='sua_chave_aqui'", file=sys.stderr)
             sys.exit(1)
         
         try:
-            import anthropic
-            self.client = anthropic.Anthropic(api_key=self.api_key)
+            return ChatAnthropic(
+                api_key=self.api_key,
+                model=self.model or "claude-3-5-sonnet-20241022",
+                max_tokens=self.max_tokens or 2000,
+                temperature=0.7
+            )
         except ImportError:
-            print("Erro: Biblioteca 'anthropic' não instalada. Execute: pip install anthropic", file=sys.stderr)
+            print("Erro: Biblioteca 'langchain-anthropic' não instalada. Execute: pip install langchain-anthropic", file=sys.stderr)
             sys.exit(1)
     
     def call_api(self, message, model, max_tokens, **kwargs):
-        """Chama a API do Claude"""
-        if not self.client:
-            self._initialize_client()
+        """Chama a API do Claude usando LangChain"""
+        self.model = model
+        self.max_tokens = max_tokens
         
         try:
             print(f"Usando modelo Claude: {model} (max_tokens: {max_tokens})", file=sys.stderr)
-            
-            response = self.client.messages.create(
-                model=model,
-                max_tokens=max_tokens,
-                system=kwargs.get("persona",DEFAULT_SYSTEM_PROMPT),
-                messages=[{"role": "user", "content": message}]
-            )
-            
-            return response.content[0].text
+            return super().call_api(message, model, max_tokens, **kwargs)
             
         except Exception as e:
             print(f"Erro na chamada da API Claude: {e}", file=sys.stderr)
