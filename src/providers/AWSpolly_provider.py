@@ -6,7 +6,7 @@ import boto3
 from pathlib import Path
 
 from botocore.exceptions import ClientError, NoCredentialsError
-from .base import BaseProvider
+#from .base import BaseProvider
 from constants import (
     DEFAULT_VOICE_ID,
     DEFAULT_ENGINE,
@@ -17,7 +17,7 @@ from constants import (
 )
 
 
-class AWSPollyProvider(BaseProvider):
+class AWSPollyProvider():
     """Classe para gerar áudio usando AWS Polly."""
 
 

@@ -49,20 +49,17 @@ class ResponseHandler:
         audio_file = None
         if args.voz:
             print(f"Mensagem original: \n {response}", file=sys.stderr)
-            if args.provider == 'groq' or args.groq:
-                provider = GroqProviderTTS()
-                audio_file = provider.call_api(response, args.voz)
-            elif args.provider == 'openai':
-                provider = OpenAIAudio()
-                audio_file = provider.call_api(response, args.voz)
-            elif args.provider == 'aws':
-                provider = AWSPollyProvider()
-                audio_file = provider.call_api(response, args.voz)
-            else:
-                print(f"Erro: Provedor de voz '{args.provider}' não suportado.", file=sys.stderr)
+            print("Convertendo texto em áudio usando openaiTTS...")
+            provider = OpenAIAudio(args.voz)
+            try:
+                provider.call_api(response, args.voz)
+                audio_file = provider.nome_arquivo
+            except Exception as e:
+                print(f"Erro ao processar a resposta: {e}", file=sys.stderr)
                 sys.exit(1)
         elif args.polly:
             print(remove_markdown(response))
+            print("Convertendo texto em áudio usando AWS Polly...")
             provider = AWSPollyProvider()
             audio_file = provider.call_api(response, args.polly)
         elif args.t:
@@ -76,11 +73,13 @@ class ResponseHandler:
                 print(f"Erro ao salvar arquivo: {e}", file=sys.stderr)
                 sys.exit(1)
         elif args.p:
-            provider_log = "openai" if args.provider == 'openai' else "claude"
-            print(format_as_log(response, provider=provider_log))
+            print(format_as_log(response, provider=args.provider or 'groq'))
         else:
             print(response)
         
-        if audio_file and args.ouvir:
-            print(f"Reproduzindo áudio: {audio_file}", file=sys.stderr)
-            os.system(f"mpg123 {audio_file} > /dev/null 2>&1")
+        if args.ouvir:
+            print(f"Tentando ouvir áudio: {audio_file}...", file=sys.stderr)
+            # if audio_file exists
+            if args.voz or args.polly:
+                print(f"Reproduzindo áudio: {audio_file}", file=sys.stderr)
+                os.system(f"mpg123 {audio_file} > /dev/null 2>&1")

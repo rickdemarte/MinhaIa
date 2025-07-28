@@ -4,15 +4,42 @@ import re
 
 from pathlib import Path
 from .base import BaseProvider
+from utils.error_handler import SecureErrorHandler
+from langchain_openai import ChatOpenAI
+from langchain_core.language_models.chat_models import BaseChatModel
 from constants import DEFAULT_VOICE, DEFAULT_TTS_MODEL, VOICE_INSTRUCTIONS
 
 class OpenAIAudio(BaseProvider):
     """Classe para manipulação de áudio usando OpenAI TTS"""
 
-    def __init__(self):
+    def __init__(self,arquivo):
         super().__init__(api_key=os.getenv('OPENAI_API_KEY'))
         self.client = None
+        self.nome_arquivo=arquivo
+
+    def _initialize_llm(self) -> BaseChatModel:
+        """Inicializa o modelo OpenAI LangChain"""
+        if not self.api_key:
+            SecureErrorHandler.handle_error(
+                "api_key_missing",
+                Exception("OPENAI_API_KEY not found"),
+                context={"provider": "openai"}
+            )
         
+        try:
+            return ChatOpenAI(
+                api_key=self.api_key,
+                model=self.model or "gpt-4o-mini",
+                max_tokens=self.max_tokens or 2000,
+                temperature=0.7
+            )
+        except ImportError as e:
+            SecureErrorHandler.handle_error(
+                "dependency_missing",
+                e,
+                context={"provider": "openai", "library": "langchain-openai"}
+            )
+
     def _initialize_client(self):
         """Inicializa o cliente OpenAI"""
         if not self.api_key:
@@ -197,7 +224,8 @@ class OpenAIAudio(BaseProvider):
         if len(partes) == 1:
             # Texto cabe em um único arquivo
             print(f"[📝] Texto preparado para áudio ({len(texto_limpo)} caracteres)", file=sys.stderr)
-            self._gerar_audio_parte(texto_limpo, nome_arquivo, modelo, voz, persona)
+            file_path = self._gerar_audio_parte(texto_limpo, nome_arquivo, modelo, voz, extensao='.mp3', persona=VOICE_INSTRUCTIONS)
+            return file_path
         else:
             # Texto precisa ser dividido
             print(f"[📝] Texto muito grande ({len(texto_limpo)} caracteres)", file=sys.stderr)
@@ -239,9 +267,10 @@ class OpenAIAudio(BaseProvider):
                     f.write(f"Modelo: {modelo}\n")
                     f.write(f"Voz: {voz}\n")
                     f.write(f"Gerado em: {os.path.basename(sys.argv[0])}\n")
-                
+
                 print(f"[📄] Informações salvas em: {info_file}", file=sys.stderr)
                 print(f"\n[✅] Áudio completo gerado com sucesso!", file=sys.stderr)
+                return nome_arquivo
             else:
                 print(f"\n[⚠️] Não foi possível concatenar os áudios.", file=sys.stderr)
                 print(f"[📁] Os arquivos parciais foram mantidos:", file=sys.stderr)

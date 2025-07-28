@@ -111,7 +111,9 @@ class CLIArgumentParser:
     
     def _process_provider_shortcuts(self, args):
         """Processa atalhos de providers"""
-        if args.claude:
+        if args.dryrun:
+            args.provider = 'dryrun'
+        elif args.claude:
             args.provider = 'claude'
         elif args.deepseek:
             args.provider = 'deepseek'
@@ -119,12 +121,11 @@ class CLIArgumentParser:
             args.provider = 'qwen'
         elif args.grok:
             args.provider = 'grok'
-        elif args.dryrun:
-            args.provider = 'dryrun'
         elif args.groq:
             args.provider = 'groq'
         elif args.openai:
             args.provider = 'openai'
+
     
     def _process_persona(self, args):
         """Processa personalidade e código"""
