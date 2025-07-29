@@ -25,11 +25,12 @@ class CLIArgumentParser:
         parser.add_argument('--secure', action='store_true', help='Usa chaves de API para autenticação')
 
         # Providers
-        parser.add_argument('--provider', 
-                          choices=['aws', 'openai', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper','groq'], 
+        parser.add_argument('--provider',
+                          choices=['aws', 'openai', 'openai_assistant', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper','groq'],
                           default='groq',
                           help='Escolha o provider da API de chat')
         parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
+        parser.add_argument('--assistant', action='store_true', help='Usa Assistants API da OpenAI')
         parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
         parser.add_argument('--deepseek', action='store_true', help='Usa API da DeepSeek')
         parser.add_argument('--qwen', action='store_true', help='Usa API da Alibaba')
@@ -62,6 +63,7 @@ class CLIArgumentParser:
         parser.add_argument('--codigo', type=str)
         parser.add_argument('--pdf', type=str)
         parser.add_argument('--texto', type=str)
+        parser.add_argument('--files', nargs='+', help='Arquivos para Assistants API')
         
         # Personalidade ou código
         parser.add_argument('--persona', type=str, help='Personalidade a ser usada')
@@ -125,6 +127,8 @@ class CLIArgumentParser:
             args.provider = 'groq'
         elif args.openai:
             args.provider = 'openai'
+        elif args.assistant:
+            args.provider = 'openai_assistant'
 
     
     def _process_persona(self, args):

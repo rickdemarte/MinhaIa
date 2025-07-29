@@ -1,4 +1,5 @@
 from providers.openai_provider import OpenAIProvider
+from providers.openai_assistant_provider import OpenAIAssistantProvider
 from providers.claude_provider import ClaudeProvider
 from providers.deepseek_provider import DeepSeekProvider
 from providers.alibaba_provider import Qwen3Provider
@@ -14,6 +15,7 @@ class ProviderFactory:
     
     _providers = {
         'openai': OpenAIProvider,
+        'openai_assistant': OpenAIAssistantProvider,
         'claude': ClaudeProvider,
         'deepseek': DeepSeekProvider,
         'qwen': Qwen3Provider,
