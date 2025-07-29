@@ -45,6 +45,8 @@ class OpenAIAssistantProvider():
             tools = [{"type": "file_search"}]
             if not is_o_model:
                 tools.append({"type": "code_interpreter"})
+            #if model in ["gpt-4.1" "gpt-4.1-mini" "gpt-4o"]:
+            #    tools.append({"type": "web_search"})
 
             assistant = self.client.beta.assistants.create(
                 model=model,

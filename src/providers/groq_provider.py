@@ -80,6 +80,8 @@ class GroqProvider(BaseProvider):
     
     def _extrair_texto_resposta_o_model(self, response):
         """Extrai texto da resposta dos modelos O"""
+        nerd_stats = response.response_metadata.get("token_usage")
+        print(f"\nEstatísticas para Nerds: {str(nerd_stats)}")
         try:
             segundo_item = response.output[1]
             if not segundo_item.content or len(segundo_item.content) == 0:
@@ -91,4 +93,10 @@ class GroqProvider(BaseProvider):
     
     def get_available_models(self):
         """Retorna modelos disponíveis"""
-        return ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"]
+        return [
+            "deepseek-r1-distill-llama-70b", 
+            "meta-llama/llama-4-maverick-17b-128e-instruct", 
+            "llama-3.3-70b-versatile", 
+            "llama-3.1-8b-instant", 
+            "mistral-saba-24b",
+            "qwen/qwen3-32b"]

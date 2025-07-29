@@ -1,3 +1,4 @@
+import sys
 from abc import ABC, abstractmethod
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -31,6 +32,8 @@ class BaseProvider(ABC):
         
         # Chamar o modelo
         response = self.llm.invoke(messages)
+        nerd_stats = response.response_metadata.get("token_usage")
+        print(f"Estatísticas para Nerds: {str(nerd_stats)}")
         return response.content
     
     @abstractmethod
