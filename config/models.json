@@ -251,7 +251,12 @@
   "gemini": {
     "models": {
       "fast": {
-        "model": "models/gemini-1.5-flash-latest",
+        "model": "models/gemini-2.5-flash-lite",
+        "max_tokens": 8192,
+        "description": "Resposta rápida e econômica"
+      },
+      "cheap": {
+        "model": "models/gemini-2.0-flash-lite",
         "max_tokens": 8192,
         "description": "Resposta rápida e econômica"
       },
@@ -260,8 +265,18 @@
         "max_tokens": 32768,
         "description": "Equilíbrio entre custo e desempenho"
       },
+      "smartest":{
+        "model": "models/gemini-2.5-flash-latest",
+        "max_tokens": 32768,
+        "description": "Mais inteligente"
+      },
+      "absurdo": {
+        "model": "models/gemini-2.5-pro-latest",
+        "max_tokens": 32768,
+        "description": "Melhor modelo não-raciocinante"
+      },
       "default": {
-        "model": "models/gemini-1.5-pro-latest",
+        "model": "models/gemini-2.5-flash",
         "max_tokens": 32768,
         "description": "padrão"
       }
