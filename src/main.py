@@ -39,6 +39,9 @@ class AIController:
         elif provider_name == 'openai':
             provider = self.provider_factory.create_provider('openai')
             return provider.call_api(mensagem, modelo, max_tokens, is_o_model=is_o_model, persona=args.persona)
+        elif provider_name == 'openai_assistant':
+            provider = self.provider_factory.create_provider('openai_assistant')
+            return provider.call_api(mensagem, modelo, max_tokens, persona=args.persona, files=args.files)
         else:
             # Handle other providers
             provider = self.provider_factory.create_provider(provider_name)
