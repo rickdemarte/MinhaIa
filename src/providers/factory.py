@@ -15,7 +15,7 @@ class ProviderFactory:
     
     _providers = {
         'openai': OpenAIProvider,
-        'openai_assistant': OpenAIAssistantProvider,
+        'assistant': OpenAIAssistantProvider,
         'claude': ClaudeProvider,
         'deepseek': DeepSeekProvider,
         'qwen': Qwen3Provider,

@@ -135,7 +135,7 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|openai_assistant|claude|deepseek|qwen|grok]  Escolhe o provider (padrão: openai)
+    --provider [openai|assistant|claude|deepseek|qwen|grok]  Escolhe o provider (padrão: openai)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis

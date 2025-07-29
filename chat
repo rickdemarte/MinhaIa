@@ -36,7 +36,7 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|openai_assistant|claude|deepseek|qwen|grok]  Escolhe o provider (padrão: openai)
+    --provider [openai|assistant|claude|deepseek|qwen|grok]  Escolhe o provider (padrão: openai)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
@@ -85,7 +85,7 @@ OPÇÕES DE ENTRADA:
     --codigo ARQUIVO            Analisa arquivo de código
     --pdf ARQUIVO               Analisa arquivo PDF
     --texto ARQUIVO             Lê texto de arquivo
-    --files ARQ1 ARQ2...        Envia múltiplos arquivos para Assistants API
+    --arquivos ARQ1 ARQ2...        Envia múltiplos arquivos para Assistants API
 
 EXEMPLOS:
     chat "Explique firewall"

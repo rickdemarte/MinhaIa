@@ -29,6 +29,8 @@ class AIController:
     def process_api_call(self, args, provider_name: str, mensagem: str, modelo: str, max_tokens: int, is_o_model: bool):
         """Process API call based on provider and arguments"""
         print(f"Enviando para {provider_name.upper()}...", file=sys.stderr)
+        if is_o_model:
+            print("Aviso: Modelos O podem levar mais tempo para processar respostas complexas", file=sys.stderr)
         
         # Handle special cases
         if provider_name == 'whisper':
@@ -39,9 +41,9 @@ class AIController:
         elif provider_name == 'openai':
             provider = self.provider_factory.create_provider('openai')
             return provider.call_api(mensagem, modelo, max_tokens, is_o_model=is_o_model, persona=args.persona)
-        elif provider_name == 'openai_assistant':
-            provider = self.provider_factory.create_provider('openai_assistant')
-            return provider.call_api(mensagem, modelo, max_tokens, persona=args.persona, files=args.files)
+        elif provider_name == 'assistant':
+            provider = self.provider_factory.create_provider('assistant')
+            return provider.call_api(mensagem, modelo, max_tokens, persona=args.persona,is_o_model=is_o_model, files=args.arquivos)
         else:
             # Handle other providers
             provider = self.provider_factory.create_provider(provider_name)

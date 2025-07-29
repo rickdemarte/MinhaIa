@@ -26,7 +26,7 @@ class CLIArgumentParser:
 
         # Providers
         parser.add_argument('--provider',
-                          choices=['aws', 'openai', 'openai_assistant', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper','groq'],
+                          choices=['aws', 'openai', 'assistant', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper','groq'],
                           default='groq',
                           help='Escolha o provider da API de chat')
         parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
@@ -63,7 +63,7 @@ class CLIArgumentParser:
         parser.add_argument('--codigo', type=str)
         parser.add_argument('--pdf', type=str)
         parser.add_argument('--texto', type=str)
-        parser.add_argument('--files', nargs='+', help='Arquivos para Assistants API')
+        parser.add_argument('--arquivos', nargs='+', help='Arquivos para Assistants API')
         
         # Personalidade ou código
         parser.add_argument('--persona', type=str, help='Personalidade a ser usada')
@@ -128,7 +128,7 @@ class CLIArgumentParser:
         elif args.openai:
             args.provider = 'openai'
         elif args.assistant:
-            args.provider = 'openai_assistant'
+            args.provider = 'assistant'
 
     
     def _process_persona(self, args):

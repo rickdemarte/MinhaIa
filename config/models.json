@@ -68,39 +68,33 @@
       }
     }
   },
-  "openai_assistant": {
+  "assistant": {
     "models": {
       "fast": {
-        "model": "gpt-4o-mini",
-        "max_tokens": 4096,
+        "model": "gpt-4.1-nano",
+        "max_tokens": 32768,
         "description": "rápido e econômico"
       },
       "cheap": {
         "model": "gpt-4o-mini",
-        "max_tokens": 4096,
+        "max_tokens": 8192,
         "description": "rápido e econômico"
       },
       "smart": {
-        "model": "gpt-4o",
-        "max_tokens": 16384,
+        "model": "gpt-4.1",
+        "max_tokens": 32768,
         "description": "equilibrado"
       },
       "smartest": {
         "model": "o3-mini",
         "max_tokens": 100000,
-        "description": "raciocínio profundo",
-        "is_o_model": true
-      },
-      "absurdo": {
-        "model": "o3",
-        "max_tokens": 100000,
-        "description": "máximo poder",
+        "description": "Reasoning, mas nem tanto",
         "is_o_model": true
       },
       "default": {
-        "model": "chatgpt-4o-latest",
-        "max_tokens": 8192,
-        "description": "padrão"
+        "model": "gpt-4.1",
+        "max_tokens": 32768,
+        "description": "Resposta padrão, mas não é de graça"
       }
     }
   },
