@@ -7,6 +7,7 @@ from providers.grok_provider import GrokProvider
 from providers.openaiWhisper_provider import WhisperProvider
 from providers.AWStranscribe_provider import AWSTranscribeProvider
 from providers.groq_provider import GroqProvider
+from providers.gemini_provider import GeminiProvider
 
 
 
@@ -22,7 +23,8 @@ class ProviderFactory:
         'grok': GrokProvider,
         'whisper': WhisperProvider,
         'aws_transcribe': AWSTranscribeProvider,
-        'groq': GroqProvider
+        'groq': GroqProvider,
+        'gemini': GeminiProvider
     }
     
     @classmethod

@@ -36,7 +36,7 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|assistant|claude|deepseek|qwen|grok]  Escolhe o provider (padrão: openai)
+    --provider [openai|assistant|claude|deepseek|qwen|grok|gemini]  Escolhe o provider (padrão: openai)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
@@ -57,6 +57,7 @@ OPÇÕES DE PROVIDER:
     --qwen                      Usa Qwen
     --grok                      Usa Grok
     --groq                      Usa Groq
+    --gemini                    Usa Gemini
 
 OPÇÕES DE PERSONALIDADE:
     --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
@@ -100,6 +101,7 @@ VARIÁVEIS DE AMBIENTE:
     QWEN_API_KEY                Chave da API Qwen
     GROK_API_KEY                Chave da API Grok
     GROQ_API_KEY                Chave da API Groq
+    GOOGLE_API_KEY             Chave da API Gemini
 
 Para mais informações: https://github.com/rickdemarte/MinhaIa.git
 EOF
@@ -136,7 +138,7 @@ check_dependencies() {
     # Verifica bibliotecas Python
     echo -e "\n${BLUE}Verificando bibliotecas Python...${NC}"
     
-    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq; do
+    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq google.generativeai langchain_google_genai; do
         if python3 -c "import $lib" 2>/dev/null; then
             echo -e "${GREEN}✓ $lib instalado${NC}"
         else
@@ -199,6 +201,13 @@ check_dependencies() {
     else
         echo -e "${YELLOW}⚠ QWEN_API_KEY não configurada${NC}"
         echo "    Configure com: export QWEN_API_KEY='sua-chave'"
+    fi
+
+    if [ -n "$GOOGLE_API_KEY" ]; then
+        echo -e "${GREEN}✓ GOOGLE_API_KEY configurada${NC}"
+    else
+        echo -e "${YELLOW}⚠ GOOGLE_API_KEY não configurada${NC}"
+        echo "    Configure com: export GOOGLE_API_KEY='sua-chave'"
     fi
 
     if [ $missing_deps -eq 1 ]; then

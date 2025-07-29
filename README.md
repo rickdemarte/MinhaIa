@@ -40,6 +40,7 @@ AI CLI é um cliente unificado que permite a interação com várias APIs de int
 │   │   ├── openai_provider.py
 │   │   ├── groq_provider.py
 │   │   ├── factory.py
+│   │   ├── gemini_provider.py
 │   │   ├── AWSpolly_provider.py
 │   │   ├── alibaba_provider.py
 │   │   ├── grok_provider.py
@@ -117,6 +118,7 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    - `QWEN_API_KEY`: Chave da API Qwen.
    - `GROK_API_KEY`: Chave da API Grok.
    - `GROQ_API_KEY`: Chave da API Groq.
+   - `GOOGLE_API_KEY`: Chave da API Gemini.
 
 5. **Execute o cliente**:
    ```bash
@@ -135,7 +137,7 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|assistant|claude|deepseek|qwen|grok]  Escolhe o provider (padrão: openai)
+    --provider [openai|assistant|claude|deepseek|qwen|grok|gemini]  Escolhe o provider (padrão: openai)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
@@ -155,6 +157,7 @@ OPÇÕES DE PROVIDER:
     --qwen                      Usa Qwen
     --grok                      Usa Grok
     --groq                      Usa Groq
+    --gemini                    Usa Gemini
 
 OPÇÕES DE PERSONALIDADE:
     --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
@@ -198,6 +201,7 @@ VARIÁVEIS DE AMBIENTE:
     QWEN_API_KEY                Chave da API Qwen
     GROK_API_KEY                Chave da API Grok
     GROQ_API_KEY                Chave da API Groq
+    GOOGLE_API_KEY              Chave da API Gemini
 
 ```
 

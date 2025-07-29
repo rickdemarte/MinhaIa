@@ -10,6 +10,8 @@ boto3==1.39.3
 xai_sdk
 pydub
 groq
+langchain-google-genai
+google-generativeai
 fastapi
 uvicorn
 pydantic

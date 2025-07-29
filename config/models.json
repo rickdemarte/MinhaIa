@@ -248,6 +248,25 @@
       }
     }
   },
+  "gemini": {
+    "models": {
+      "fast": {
+        "model": "models/gemini-1.5-flash-latest",
+        "max_tokens": 8192,
+        "description": "Resposta rápida e econômica"
+      },
+      "smart": {
+        "model": "models/gemini-1.5-pro-latest",
+        "max_tokens": 32768,
+        "description": "Equilíbrio entre custo e desempenho"
+      },
+      "default": {
+        "model": "models/gemini-1.5-pro-latest",
+        "max_tokens": 32768,
+        "description": "padrão"
+      }
+    }
+  },
   "dryrun": {
     "models": {
       "default": {
