@@ -138,7 +138,7 @@ check_dependencies() {
     # Verifica bibliotecas Python
     echo -e "\n${BLUE}Verificando bibliotecas Python...${NC}"
     
-    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq google.generativeai langchain_google_genai; do
+    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq google.generativeai; do
         if python3 -c "import $lib" 2>/dev/null; then
             echo -e "${GREEN}✓ $lib instalado${NC}"
         else
