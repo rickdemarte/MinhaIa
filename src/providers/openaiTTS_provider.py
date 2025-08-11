@@ -5,8 +5,6 @@ import re
 from pathlib import Path
 from .base import BaseProvider
 from utils.error_handler import SecureErrorHandler
-from langchain_openai import ChatOpenAI
-from langchain_core.language_models.chat_models import BaseChatModel
 from constants import DEFAULT_VOICE, DEFAULT_TTS_MODEL, VOICE_INSTRUCTIONS
 
 class OpenAIAudio(BaseProvider):
@@ -16,29 +14,6 @@ class OpenAIAudio(BaseProvider):
         super().__init__(api_key=os.getenv('OPENAI_API_KEY'))
         self.client = None
         self.nome_arquivo=arquivo
-
-    def _initialize_llm(self) -> BaseChatModel:
-        """Inicializa o modelo OpenAI LangChain"""
-        if not self.api_key:
-            SecureErrorHandler.handle_error(
-                "api_key_missing",
-                Exception("OPENAI_API_KEY not found"),
-                context={"provider": "openai"}
-            )
-        
-        try:
-            return ChatOpenAI(
-                api_key=self.api_key,
-                model=self.model or "gpt-4o-mini",
-                max_tokens=self.max_tokens or 2000,
-                temperature=0.7
-            )
-        except ImportError as e:
-            SecureErrorHandler.handle_error(
-                "dependency_missing",
-                e,
-                context={"provider": "openai", "library": "langchain-openai"}
-            )
 
     def _initialize_client(self):
         """Inicializa o cliente OpenAI"""

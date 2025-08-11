@@ -1,21 +1,19 @@
 import os
 import sys
+from openai import OpenAI
 from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT
 from utils.error_handler import SecureErrorHandler
-from langchain_openai import ChatOpenAI
-from langchain_core.language_models.chat_models import BaseChatModel
+
 
 class DeepSeekProvider(BaseProvider):
-    """Provider para DeepSeek AI API usando LangChain com OpenAI-compatible API"""
+    """Provider para DeepSeek AI API usando a interface compatível com OpenAI"""
 
     def __init__(self):
         super().__init__(api_key=os.getenv('DEEPSEEK_API_KEY'))
-        self.model = None
-        self.max_tokens = None
+        self.client = OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com") if self.api_key else None
 
-    def _initialize_llm(self) -> BaseChatModel:
-        """Inicializa o modelo DeepSeek usando LangChain OpenAI wrapper"""
+    def call_api(self, message, model, max_tokens, **kwargs):
         if not self.api_key:
             SecureErrorHandler.handle_error(
                 "api_key_missing",
@@ -24,28 +22,20 @@ class DeepSeekProvider(BaseProvider):
             )
 
         try:
-            return ChatOpenAI(
-                api_key=self.api_key,
-                base_url="https://api.deepseek.com",
-                model=self.model or "deepseek-chat",
-                max_tokens=self.max_tokens or 2000,
-                temperature=0.7
-            )
-        except ImportError as e:
-            SecureErrorHandler.handle_error(
-                "dependency_missing",
-                e,
-                context={"provider": "deepseek", "library": "langchain-openai"}
-            )
-
-    def call_api(self, message, model, max_tokens, **kwargs):
-        """Chama a API do DeepSeek usando LangChain"""
-        self.model = model
-        self.max_tokens = max_tokens
-        
-        try:
             print(f"Usando modelo DeepSeek: {model} (max_tokens: {max_tokens})", file=sys.stderr)
-            return super().call_api(message, model, max_tokens, **kwargs)
+            persona = kwargs.get("persona", DEFAULT_SYSTEM_PROMPT)
+            response = self.client.chat.completions.create(
+                model=model,
+                max_tokens=max_tokens,
+                temperature=0.7,
+                messages=[
+                    {"role": "system", "content": persona},
+                    {"role": "user", "content": message}
+                ]
+            )
+            nerd_stats = response.usage
+            print(f"Estatísticas para Nerds: {str(nerd_stats)}")
+            return response.choices[0].message.content
         except Exception as e:
             SecureErrorHandler.handle_error(
                 "api_error",
