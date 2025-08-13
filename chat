@@ -231,11 +231,11 @@ cria_venv() {
     fi
 
     # Cria o ambiente virtual
-    python3 -m venv "$SCRIPT_DIR/vpython"
+    python3 -m venv "$SCRIPT_DIR/.venv"
 
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Ambiente virtual criado com sucesso!${NC}"
-        source "$SCRIPT_DIR/vpython/bin/activate"
+        source "$SCRIPT_DIR/.venv/bin/activate"
     else
         echo -e "${RED}✗ Erro ao criar ambiente virtual${NC}"
         exit 1
@@ -401,11 +401,11 @@ main() {
     fi
     
     # Ativa ambiente virtual se existir
-    if [ -d "$SCRIPT_DIR/vpython" ]; then
+    if [ -d "$SCRIPT_DIR/.venv" ]; then
         if [ -z "$VIRTUAL_ENV" ]; then
             echo -e "${YELLOW}Ambiente virtual encontrado, mas não ativado.${NC}"
             echo -e "${GREEN}Ativando ambiente virtual...${NC}"
-            source "$SCRIPT_DIR/vpython/bin/activate"
+            source "$SCRIPT_DIR/.venv/bin/activate"
         else
             echo -e "${GREEN}Ambiente virtual já está ativo.${NC}"
         fi
@@ -414,7 +414,7 @@ main() {
         cria_venv
         echo -e "${GREEN}Ambiente virtual criado e ativado.${NC}"
         echo -e "${BLUE}Ativando ambiente virtual...${NC}"
-        source "$SCRIPT_DIR/vpython/bin/activate"
+        source "$SCRIPT_DIR/.venv/bin/activate"
     fi
     
     # Adiciona o diretório do script ao PYTHONPATH
