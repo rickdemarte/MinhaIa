@@ -10,12 +10,7 @@ try:
     from pydub import AudioSegment
     from pydub.utils import mediainfo
 except ImportError as e:
-    print(f"Erro ao importar pydub: {e}", file=sys.stderr)
-    print("Instale as dependências necessárias:", file=sys.stderr)
-    print("pip install pydub", file=sys.stderr)
-    print("Para Linux: sudo apt-get install python3-dev libasound2-dev", file=sys.stderr)
-    print("Para manipulação de MP3: sudo apt-get install ffmpeg libavcodec-extra", file=sys.stderr)
-    sys.exit(1)
+    raise ImportError(f"Erro ao importar pydub: {e}\nInstale as dependências necessárias:\npip install pydub\nPara Linux: sudo apt-get install python3-dev libasound2-dev\nPara manipulação de MP3: sudo apt-get install ffmpeg libavcodec-extra")
 
 from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT, O_MODEL_SYSTEM_PROMPT
@@ -37,12 +32,12 @@ class WhisperProvider(BaseProvider):
                 Exception("OPENAI_API_KEY not found"),
                 context={"provider": "openai_whisper"}
             )
+            raise Exception("OPENAI_API_KEY not found")
         
         try:
             self.client = openai.OpenAI(api_key=self.api_key)
         except ImportError:
-            print("Erro: Biblioteca 'openai' não instalada. Execute: pip install openai", file=sys.stderr)
-            sys.exit(1)
+            raise ImportError("Erro: Biblioteca 'openai' não instalada. Execute: pip install openai")
     
     def _split_audio(self, audio_file_path):
         """
@@ -54,9 +49,7 @@ class WhisperProvider(BaseProvider):
             import subprocess
             subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
         except (FileNotFoundError, subprocess.SubprocessError):
-            print("Erro: ffmpeg não encontrado. Instale com: sudo apt-get install ffmpeg", file=sys.stderr)
-            print("Ou use: brew install ffmpeg (macOS)", file=sys.stderr)
-            sys.exit(1)
+            raise Exception("Erro: ffmpeg não encontrado. Instale com: sudo apt-get install ffmpeg\nOu use: brew install ffmpeg (macOS)")
         try:
             # Tenta detectar o formato do arquivo automaticamente
             file_info = mediainfo(audio_file_path)
@@ -86,8 +79,7 @@ class WhisperProvider(BaseProvider):
             try:
                 audio = AudioSegment.from_file(audio_file_path)
             except Exception as e2:
-                print(f"Erro fatal ao carregar áudio: {e2}", file=sys.stderr)
-                sys.exit(1)
+                raise Exception(f"Erro fatal ao carregar áudio: {e2}")
         
         segments = []
         total_duration = audio.duration_seconds
@@ -127,12 +119,7 @@ class WhisperProvider(BaseProvider):
                     print(f"Aviso: Segmento {i+1} está vazio", file=sys.stderr)
                     
             except Exception as e:
-                print(f"Erro ao criar segmento {i+1}: {e}", file=sys.stderr)
-                # Limpa arquivos temporários já criados em caso de erro
-                for seg in segments:
-                    if seg != audio_file_path and os.path.exists(seg):
-                        os.remove(seg)
-                sys.exit(1)
+                raise Exception(f"Erro ao criar segmento {i+1}: {e}")
         
         return segments
     
@@ -141,13 +128,7 @@ class WhisperProvider(BaseProvider):
             self._initialize_client()
         
         if not Path(audio_file_path).is_file():
-            SecureErrorHandler.handle_error(
-                "file_not_found",
-                FileNotFoundError(f"Audio file not found: {SecureErrorHandler.sanitize_path(audio_file_path)}"),
-                context={"provider": "openai_whisper"},
-                exit_code=0
-            )
-            return None
+            raise FileNotFoundError(f"Audio file not found: {audio_file_path}")
         
         try:
             personalidade = kwargs.get("persona", DEFAULT_SYSTEM_PROMPT)
@@ -185,7 +166,7 @@ class WhisperProvider(BaseProvider):
                         exit_code=0,
                         show_hint=False
                     )
-                    continue
+                    raise e
                 finally:
                     # Remove arquivo temporário se não for o original
                     if segment_path != audio_file_path and os.path.exists(segment_path):
@@ -202,6 +183,7 @@ class WhisperProvider(BaseProvider):
                 e,
                 context={"provider": "openai_whisper", "model": modelo}
             )
+            raise e
     
     def get_available_models(self):
         return ["whisper-1", "gpt-4o-transcribe", "gpt-4o-mini-transcribe"]

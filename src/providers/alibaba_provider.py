@@ -17,8 +17,7 @@ class Qwen3Provider(BaseProvider):
 
     def call_api(self, message, model, max_tokens, is_o_model=False, **kwargs):
         if not self.api_key:
-            print("Erro: Variável de ambiente QWEN_API_KEY não encontrada", file=sys.stderr)
-            sys.exit(1)
+            raise Exception("Erro: Variável de ambiente QWEN_API_KEY não encontrada")
 
         if is_o_model:
             print("Aviso: Modelos O não são suportados pelo Qwen", file=sys.stderr)
@@ -40,8 +39,7 @@ class Qwen3Provider(BaseProvider):
             print(f"Estatísticas para Nerds: {str(nerd_stats)}")
             return response.choices[0].message.content
         except Exception as e:
-            print(f"Erro na chamada da API Qwen: {e}", file=sys.stderr)
-            sys.exit(1)
+            raise Exception(f"Erro na chamada da API Qwen: {e}")
 
     def get_available_models(self):
         """Retorna modelos disponíveis"""

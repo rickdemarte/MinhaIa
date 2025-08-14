@@ -15,6 +15,7 @@ from constants import (
     DEFAULT_LANGUAGE_CODE,
     VOICE_MAPPING
 )
+from utils.text_utils import limpar_texto_para_audio, dividir_texto_inteligente
 
 
 class AWSPollyProvider():
@@ -35,127 +36,11 @@ class AWSPollyProvider():
             
             return polly_client
         except NoCredentialsError:
-            print("Erro: Credenciais AWS não encontradas", file=sys.stderr)
-            print("Configure as credenciais usando:", file=sys.stderr)
-            print("  - aws configure", file=sys.stderr)
-            print("  - Variáveis de ambiente AWS_ACCESS_KEY_ID e AWS_SECRET_ACCESS_KEY", file=sys.stderr)
-            print("  - Arquivo ~/.aws/credentials", file=sys.stderr)
-            sys.exit(1)
+            raise NoCredentialsError()
         except ClientError as e:
-            print(f"Erro ao conectar com AWS Polly: {e}", file=sys.stderr)
-            sys.exit(1)
+            raise ClientError(e.response, e.operation_name)
     
 
-
-    def limpar_texto_para_audio(self,texto):
-        """Remove caracteres desnecessários e formata texto para TTS"""
-        # Remove múltiplas quebras de linha
-        texto = re.sub(r'\n{3,}', '\n\n', texto)
-        
-        # Remove espaços no início e fim das linhas
-        texto = '\n'.join(line.strip() for line in texto.split('\n'))
-        
-        # Remove marcações markdown comuns
-        # Headers
-        texto = re.sub(r'^#{1,6}\s+', '', texto, flags=re.MULTILINE)
-        
-        # Bold e itálico
-        texto = re.sub(r'\*\*\*(.*?)\*\*\*', r'\1', texto)  # Bold + itálico
-        texto = re.sub(r'\*\*(.*?)\*\*', r'\1', texto)      # Bold
-        texto = re.sub(r'\*(.*?)\*', r'\1', texto)          # Itálico
-        texto = re.sub(r'__(.*?)__', r'\1', texto)          # Bold alternativo
-        texto = re.sub(r'_(.*?)_', r'\1', texto)            # Itálico alternativo
-        
-        # Remove código inline e blocos de código
-        texto = re.sub(r'```[^`]*```', '', texto, flags=re.DOTALL)
-        texto = re.sub(r'`([^`]+)`', r'\1', texto)
-        
-        # Remove links mas mantém o texto
-        texto = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', texto)
-        
-        # Remove URLs
-        texto = re.sub(r'https?://\S+', '', texto)
-        
-        # Remove caracteres especiais de markdown
-        texto = re.sub(r'^[\*\-\+]\s+', '', texto, flags=re.MULTILINE)  # Listas
-        texto = re.sub(r'^\d+\.\s+', '', texto, flags=re.MULTILINE)     # Listas numeradas
-        texto = re.sub(r'^>\s+', '', texto, flags=re.MULTILINE)         # Citações
-        texto = re.sub(r'\|', ' ', texto)                               # Tabelas
-        
-        # Remove emojis e caracteres especiais
-        texto = re.sub(r'[^\w\s\.,;:!?\-áàâãéèêíìîóòôõúùûçÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ]', ' ', texto)
-        
-        # Remove múltiplos espaços
-        texto = re.sub(r'\s+', ' ', texto)
-        
-        # Remove espaços antes de pontuação
-        texto = re.sub(r'\s+([.,;:!?])', r'\1', texto)
-        
-        # Garante espaço após pontuação
-        texto = re.sub(r'([.,;:!?])(\w)', r'\1 \2', texto)
-        
-        # Remove linhas vazias excessivas
-        texto = re.sub(r'\n\s*\n', '\n', texto)
-        
-        return texto.strip()
-
-    def dividir_texto_inteligente(self,texto, limite=2900):
-        """
-        Divide o texto em partes menores de forma inteligente,
-        tentando não quebrar frases no meio.
-        AWS Polly tem limite de 3000 caracteres para neural engine.
-        """
-        if len(texto) <= limite:
-            return [texto]
-        
-        partes = []
-        texto_restante = texto
-        
-        while texto_restante:
-            if len(texto_restante) <= limite:
-                partes.append(texto_restante)
-                break
-            
-            # Encontra um ponto de corte adequado
-            corte = limite
-            
-            # Tenta cortar em um parágrafo (duas quebras de linha)
-            pos_paragrafo = texto_restante.rfind('\n\n', 0, limite)
-            if pos_paragrafo > limite * 0.7:  # Se encontrou um parágrafo após 70% do limite
-                corte = pos_paragrafo
-            else:
-                # Tenta cortar em uma quebra de linha simples
-                pos_linha = texto_restante.rfind('\n', 0, limite)
-                if pos_linha > limite * 0.7:
-                    corte = pos_linha
-                else:
-                    # Tenta cortar em uma frase (ponto final)
-                    pos_frase = max(
-                        texto_restante.rfind('. ', 0, limite),
-                        texto_restante.rfind('! ', 0, limite),
-                        texto_restante.rfind('? ', 0, limite)
-                    )
-                    if pos_frase > limite * 0.7:
-                        corte = pos_frase + 1  # Inclui o ponto
-                    else:
-                        # Tenta cortar em vírgula ou ponto e vírgula
-                        pos_virgula = max(
-                            texto_restante.rfind(', ', 0, limite),
-                            texto_restante.rfind('; ', 0, limite)
-                        )
-                        if pos_virgula > limite * 0.7:
-                            corte = pos_virgula + 1
-                        else:
-                            # Último recurso: corta em espaço
-                            pos_espaco = texto_restante.rfind(' ', 0, limite)
-                            if pos_espaco > 0:
-                                corte = pos_espaco
-            
-            # Adiciona a parte e continua com o resto
-            partes.append(texto_restante[:corte].strip())
-            texto_restante = texto_restante[corte:].strip()
-        
-        return partes
 
     def concatenar_audios(self, arquivos_audio, arquivo_saida):
         """Concatena múltiplos arquivos de áudio em um único arquivo"""
@@ -208,7 +93,7 @@ class AWSPollyProvider():
         texto = texto.replace('<', '&lt;')
         texto = texto.replace('>', '&gt;')
         texto = texto.replace('"', '&quot;')
-        texto = texto.replace("'", '&apos;')
+        texto = texto.replace("'", "&apos;")
         
         # Adiciona pausas após pontuação
         texto = texto.replace('.', '.<break time="500ms"/>')
@@ -232,14 +117,13 @@ class AWSPollyProvider():
         #polly_client = self.polly
         
         # Limpa o texto antes de processar
-        texto_limpo = self.limpar_texto_para_audio(texto)
+        texto_limpo = limpar_texto_para_audio(texto)
         
         if not texto_limpo:
-            print("Erro: Texto vazio após limpeza", file=sys.stderr)
-            sys.exit(1)
+            raise Exception("Erro: Texto vazio após limpeza")
         
         # Divide o texto se necessário
-        partes = self.dividir_texto_inteligente(texto_limpo, limite=2900)
+        partes = dividir_texto_inteligente(texto_limpo, limite=2900)
         
         if len(partes) == 1:
             # Texto cabe em um único arquivo
@@ -274,7 +158,7 @@ class AWSPollyProvider():
                             os.remove(arquivo)
                         except:
                             pass
-                    sys.exit(1)
+                    raise Exception("Erro ao gerar áudio")
             
             # Concatena os arquivos
             print(f"\n[🎵] Processando áudio final...", file=sys.stderr)
@@ -405,8 +289,7 @@ class AWSPollyProvider():
                     print(f"  - {voice['Id']} ({voice['Gender']}) - Engines: {engines}")
                     
         except Exception as e:
-            print(f"Erro ao listar vozes: {e}", file=sys.stderr)
-            sys.exit(1)
+            raise Exception(f"Erro ao listar vozes: {e}")
     
     def get_available_models(self):
         """Retorna modelos disponíveis"""

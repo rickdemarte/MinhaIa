@@ -22,8 +22,7 @@ class OpenAIAssistantProvider():
             from openai import OpenAI
             self.client = OpenAI()
         except ImportError:
-            print("Erro: Biblioteca 'openai' não instalada. Execute: pip install openai", file=sys.stderr)
-            sys.exit(1)
+            raise ImportError("Erro: Biblioteca 'openai' não instalada. Execute: pip install openai")
 
     def call_api(self, message: str, model: str, max_tokens: int, **kwargs):
         """Chama a Assistants API"""
@@ -121,14 +120,7 @@ class OpenAIAssistantProvider():
             return ""
             
         except Exception as e:
-            print(f"Erro ao chamar Assistants API OpenAI: {e}", file=sys.stderr)
-            # Tenta limpar recursos em caso de erro
-            try:
-                if 'assistant' in locals():
-                    self.client.beta.assistants.delete(assistant.id)
-            except:
-                pass
-            sys.exit(1)
+            raise Exception(f"Erro ao chamar Assistants API OpenAI: {e}")
 
     def get_available_models(self):
         """Retorna modelos disponíveis"""

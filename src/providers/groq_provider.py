@@ -20,6 +20,7 @@ class GroqProvider(BaseProvider):
                 Exception("GROQ_API_KEY not found"),
                 context={"provider": "groq"}
             )
+            raise Exception("GROQ_API_KEY not found")
 
         try:
             persona = kwargs.get("persona", O_MODEL_SYSTEM_PROMPT if is_o_model else DEFAULT_SYSTEM_PROMPT)
@@ -55,6 +56,7 @@ class GroqProvider(BaseProvider):
                 e,
                 context={"provider": "groq", "model": model}
             )
+            raise e
 
     def _extrair_resposta_o_model(self, response):
         nerd_stats = response.response_metadata.get("token_usage")

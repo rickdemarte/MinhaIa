@@ -14,9 +14,7 @@ class ClaudeProvider(BaseProvider):
 
     def call_api(self, message, model, max_tokens, **kwargs):
         if not self.api_key:
-            print("Erro: Variável de ambiente ANTHROPIC_API_KEY não encontrada", file=sys.stderr)
-            print("Execute: export ANTHROPIC_API_KEY='sua_chave_aqui'", file=sys.stderr)
-            sys.exit(1)
+            raise Exception("Erro: Variável de ambiente ANTHROPIC_API_KEY não encontrada")
 
         try:
             print(f"Usando modelo Claude: {model} (max_tokens: {max_tokens})", file=sys.stderr)
@@ -34,8 +32,7 @@ class ClaudeProvider(BaseProvider):
                 print(f"Estatísticas para Nerds: {nerd_stats}")
             return response.content[0].text if response.content else ""
         except Exception as e:
-            print(f"Erro na chamada da API Claude: {e}", file=sys.stderr)
-            sys.exit(1)
+            raise Exception(f"Erro na chamada da API Claude: {e}")
 
     def get_available_models(self):
         """Retorna modelos disponíveis"""

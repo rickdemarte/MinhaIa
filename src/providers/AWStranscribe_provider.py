@@ -29,8 +29,7 @@ class AWSTranscribeProvider(BaseProvider):
         """
         
         if not bucket_name:
-            print("Nenhum bucket especificado.", file=sys.stderr)
-            exit(1)
+            raise Exception("Nenhum bucket especificado.")
         
         # Nome do arquivo no S3 com timestamp
         file_name = os.path.basename(audio_file_path)

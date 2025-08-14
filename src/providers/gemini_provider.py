@@ -22,6 +22,7 @@ class GeminiProvider(BaseProvider):
                 Exception("GOOGLE_API_KEY not found"),
                 context={"provider": "gemini"}
             )
+            raise Exception("GOOGLE_API_KEY not found")
 
         try:
             print(f"Usando modelo Gemini: {model} (max_tokens: {max_tokens})", file=sys.stderr)
@@ -39,6 +40,7 @@ class GeminiProvider(BaseProvider):
                 e,
                 context={"provider": "gemini", "model": model}
             )
+            raise e
 
     def get_available_models(self):
         """Retorna modelos disponíveis"""

@@ -13,17 +13,13 @@ class GrokProvider(BaseProvider):
 
     def _ensure_client(self):
         if not self.api_key:
-            print("Erro: Variável de ambiente GROK_API_KEY não encontrada", file=sys.stderr)
-            sys.exit(1)
+            raise Exception("Erro: Variável de ambiente GROK_API_KEY não encontrada")
         if not self.client:
             try:
                 from xai_sdk import Client as XAIClient
                 self.client = XAIClient(api_key=self.api_key)
             except ImportError:
-                import traceback
-                print("Erro: Biblioteca 'xai_sdk' não instalada. Execute: pip install xai_sdk", file=sys.stderr)
-                traceback.print_exc(file=sys.stderr)
-                sys.exit(1)
+                raise ImportError("Erro: Biblioteca 'xai_sdk' não instalada. Execute: pip install xai_sdk")
 
     def call_api(self, message, model, max_tokens, **kwargs):
         self._ensure_client()
@@ -38,8 +34,7 @@ class GrokProvider(BaseProvider):
             response = chat.sample()
             return getattr(response, "content", "")
         except Exception as e:
-            print(f"Erro na chamada da API Grok: {e}", file=sys.stderr)
-            sys.exit(1)
+            raise Exception(f"Erro na chamada da API Grok: {e}")
 
     def get_available_models(self):
         """Retorna modelos disponíveis"""

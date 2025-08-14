@@ -20,6 +20,7 @@ class DeepSeekProvider(BaseProvider):
                 Exception("DEEPSEEK_API_KEY not found"),
                 context={"provider": "deepseek"}
             )
+            raise Exception("DEEPSEEK_API_KEY not found")
 
         try:
             print(f"Usando modelo DeepSeek: {model} (max_tokens: {max_tokens})", file=sys.stderr)
@@ -42,6 +43,7 @@ class DeepSeekProvider(BaseProvider):
                 e,
                 context={"provider": "deepseek", "model": model}
             )
+            raise e
 
     def get_available_models(self):
         """Retorna modelos disponíveis da DeepSeek"""

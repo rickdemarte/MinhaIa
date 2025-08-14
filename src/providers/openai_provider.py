@@ -61,6 +61,7 @@ class OpenAIProvider(BaseProvider):
                 Exception("OPENAI_API_KEY not found"),
                 context={"provider": "openai"}
             )
+            raise Exception("OPENAI_API_KEY not found")
 
         try:
             persona = kwargs.get("persona", O_MODEL_SYSTEM_PROMPT if is_o_model else DEFAULT_SYSTEM_PROMPT)
@@ -103,6 +104,7 @@ class OpenAIProvider(BaseProvider):
                 e,
                 context={"provider": "openai", "model": model}
             )
+            raise e
 
     def _extrair_texto_resposta(self, response):
         try:
