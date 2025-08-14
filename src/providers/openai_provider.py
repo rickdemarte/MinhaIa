@@ -13,7 +13,19 @@ class OpenAIProvider(BaseProvider):
     def __init__(self):
         super().__init__(api_key=os.getenv('OPENAI_API_KEY'))
         self.client = OpenAI(api_key=self.api_key) if self.api_key else None
-        self.history_file = Path.home() / '.openai_response_id'
+        # Alias para suportar chamadas no formato `client.response.delete(id)`
+        # mantendo compatibilidade com o SDK oficial (`client.responses.delete`).
+        if self.client and not hasattr(self.client, "response"):
+            class _ResponseDeleteProxy:
+                def __init__(self, openai_client):
+                    self._openai_client = openai_client
+
+                def delete(self, response_id):
+                    # Encaminha para a API oficial `responses.delete`.
+                    return self._openai_client.responses.delete(response_id)
+
+            self.client.response = _ResponseDeleteProxy(self.client)
+        self.history_file = Path.home() / '.minhaia/response.id'
 
     def _load_history(self):
         if self.history_file.exists():
@@ -32,7 +44,8 @@ class OpenAIProvider(BaseProvider):
                 response_id = self.history_file.read_text().strip()
                 if self.client:
                     try:
-                        self.client.responses.delete(response_id)
+                        # Usa o alias solicitado: `client.response.delete(id)`
+                        self.client.response.delete(response_id)
                     except Exception:
                         pass
             finally:
@@ -55,10 +68,12 @@ class OpenAIProvider(BaseProvider):
             print(f"Usando modelo OpenAI: {model} - (max_tokens: {max_tokens}) {persona}", file=sys.stderr)
 
             prev_id = None
-            if persistent == 'yes':
-                prev_id = self._load_history()
-            elif persistent == 'no':
+            if persistent == 'no':
+                print("Limpando conversa anterior")
                 self._delete_history()
+            else:
+                prev_id = self._load_history()
+                print(f"Continuando conversa id: {prev_id}", file=sys.stderr)
 
             params = {
                 "model": model,
@@ -69,7 +84,7 @@ class OpenAIProvider(BaseProvider):
                 ]
             }
 
-            if persistent == 'yes':
+            if persistent != 'no':
                 params["store"] = True
                 if prev_id:
                     params["previous_response_id"] = prev_id
@@ -79,7 +94,7 @@ class OpenAIProvider(BaseProvider):
             if persistent == 'yes':
                 self._save_history(response.id)
 
-            nerd_stats = response.response_metadata.get("token_usage")
+            nerd_stats = response.usage
             print(f"Estatísticas para Nerds: {str(nerd_stats)}")
             return self._extrair_texto_resposta(response)
         except Exception as e:
