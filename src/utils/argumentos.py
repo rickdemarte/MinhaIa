@@ -73,6 +73,8 @@ class CLIArgumentParser:
         # Outros
         parser.add_argument('--max-tokens', type=int)
         parser.add_argument('--list-models', action='store_true')
+        parser.add_argument('--persistent', choices=['yes', 'no'],
+                            help='Mantém histórico de conversas na OpenAI')
         
         return parser
     
@@ -110,6 +112,11 @@ class CLIArgumentParser:
         # Validação para modelo absurdo
         if args.absurdo and args.provider not in ['openai', 'groq']:
             print("Erro: --absurdo disponível apenas para OpenAI e Groq", file=sys.stderr)
+            sys.exit(1)
+
+        # Validação para modo persistente
+        if args.persistent and not (args.openai or args.provider == 'openai'):
+            print("Erro: --persistent só pode ser usado com --openai", file=sys.stderr)
             sys.exit(1)
     
     def _process_provider_shortcuts(self, args):
