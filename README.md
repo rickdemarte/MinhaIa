@@ -159,6 +159,9 @@ OPÇÕES DE PROVIDER:
     --groq                      Usa Groq
     --gemini                    Usa Gemini
 
+OPÇÕES DE HISTÓRICO:
+    --persistent [yes|no]       Armazena ou remove histórico no servidor da OpenAI (usar com --openai)
+
 OPÇÕES DE PERSONALIDADE:
     --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
     --code LINGUAGEM            Gera código sem explicações

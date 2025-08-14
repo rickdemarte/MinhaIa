@@ -6,4 +6,5 @@
 Thumbs.db
 **/__pycache__
 tests/
+.openai_response_id
 voice-chat/node_modules/

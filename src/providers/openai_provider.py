@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from openai import OpenAI
 from .base import BaseProvider
 from constants import DEFAULT_SYSTEM_PROMPT, O_MODEL_SYSTEM_PROMPT
@@ -12,6 +13,33 @@ class OpenAIProvider(BaseProvider):
     def __init__(self):
         super().__init__(api_key=os.getenv('OPENAI_API_KEY'))
         self.client = OpenAI(api_key=self.api_key) if self.api_key else None
+        self.history_file = Path.home() / '.openai_response_id'
+
+    def _load_history(self):
+        if self.history_file.exists():
+            return self.history_file.read_text().strip()
+        return None
+
+    def _save_history(self, response_id):
+        try:
+            self.history_file.write_text(response_id)
+        except Exception:
+            pass
+
+    def _delete_history(self):
+        if self.history_file.exists():
+            try:
+                response_id = self.history_file.read_text().strip()
+                if self.client:
+                    try:
+                        self.client.responses.delete(response_id)
+                    except Exception:
+                        pass
+            finally:
+                try:
+                    self.history_file.unlink()
+                except Exception:
+                    pass
 
     def call_api(self, message, model, max_tokens, is_o_model=False, **kwargs):
         if not self.api_key:
@@ -23,16 +51,34 @@ class OpenAIProvider(BaseProvider):
 
         try:
             persona = kwargs.get("persona", O_MODEL_SYSTEM_PROMPT if is_o_model else DEFAULT_SYSTEM_PROMPT)
+            persistent = kwargs.get("persistent")
             print(f"Usando modelo OpenAI: {model} - (max_tokens: {max_tokens}) {persona}", file=sys.stderr)
 
-            response = self.client.responses.create(
-                model=model,
-                max_output_tokens=max_tokens,
-                input=[
+            prev_id = None
+            if persistent == 'yes':
+                prev_id = self._load_history()
+            elif persistent == 'no':
+                self._delete_history()
+
+            params = {
+                "model": model,
+                "max_output_tokens": max_tokens,
+                "input": [
                     {"role": "system", "content": persona},
                     {"role": "user", "content": message}
                 ]
-            )
+            }
+
+            if persistent == 'yes':
+                params["store"] = True
+                if prev_id:
+                    params["previous_response_id"] = prev_id
+
+            response = self.client.responses.create(**params)
+
+            if persistent == 'yes':
+                self._save_history(response.id)
+
             nerd_stats = response.response_metadata.get("token_usage")
             print(f"Estatísticas para Nerds: {str(nerd_stats)}")
             return self._extrair_texto_resposta(response)
