@@ -158,6 +158,8 @@ OPÇÕES DE PROVIDER:
     --grok                      Usa Grok
     --groq                      Usa Groq
     --gemini                    Usa Gemini
+    --perplecity                Usa Perplecity
+
 
 OPÇÕES DE HISTÓRICO:
     --persistent [yes|no]       Armazena ou remove histórico no servidor da OpenAI (usar com --openai)
