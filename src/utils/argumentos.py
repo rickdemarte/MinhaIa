@@ -26,7 +26,7 @@ class CLIArgumentParser:
 
         # Providers
         parser.add_argument('--provider',
-                          choices=['aws', 'openai', 'assistant', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper', 'groq', 'gemini', 'perplexity'],
+                          choices=['aws', 'openai', 'assistant', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper', 'groq', 'gemini'],
                           default='groq',
                           help='Escolha o provider da API de chat')
         parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
@@ -37,7 +37,6 @@ class CLIArgumentParser:
         parser.add_argument('--grok', action='store_true', help='Usa API da Grok')
         parser.add_argument('--groq', action='store_true', help='Usa API da Groq')
         parser.add_argument('--gemini', action='store_true', help='Usa API do Gemini')
-        parser.add_argument('--perplexity', action='store_true', help='Usa API da Perplexity')
         parser.add_argument('--dryrun', action='store_true', help='Não usa nenhuma API de chat')
         
         # Formatação de saída
@@ -82,8 +81,8 @@ class CLIArgumentParser:
     def parse_args(self):
         """Parse e valida os argumentos"""
         args = self.parser.parse_args()
-        self._validate_args(args)
         self._process_provider_shortcuts(args)
+        self._validate_args(args)
         self._process_persona(args)
         return args
     
@@ -97,11 +96,11 @@ class CLIArgumentParser:
                 if args.provider == 'openai':
                     args.provider = 'whisper'
                 elif args.provider not in ['openai', 'dryrun']:
-                    print(f"Erro: --transcribe só pode ser usado com openai ou sem provider\nVocê forneceu {args.provider}", 
+                    print(f"Erro: --transcribe só pode ser usado com openai ou sem provider (--dryrun)\nVocê forneceu {args.provider}", 
                           file=sys.stderr)
                     sys.exit(1)
-            else:
-                args.provider = 'aws'
+                else:
+                    args.provider = 'aws'
         elif not args.provider:
             args.provider = 'openai'
         
@@ -138,8 +137,6 @@ class CLIArgumentParser:
             args.provider = 'gemini'
         elif args.openai:
             args.provider = 'openai'
-        elif args.perplexity:
-            args.provider = 'perplexity'
         elif args.assistant:
             args.provider = 'assistant'
 

@@ -282,35 +282,6 @@
       }
     }
   },
-  "perplexity": {
-    "models": {
-      "fast": {
-        "model": "perplexity-lite",
-        "max_tokens": 8192,
-        "description": "Modelo rápido e leve da Perplexity"
-      },
-      "cheap": {
-        "model": "perplexity-econ",
-        "max_tokens": 8192,
-        "description": "Modelo econômico da Perplexity"
-      },
-      "smart": {
-        "model": "perplexity-pro",
-        "max_tokens": 32768,
-        "description": "Modelo equilibrado da Perplexity"
-      },
-      "smartest": {
-        "model": "perplexity-max",
-        "max_tokens": 65536,
-        "description": "Modelo mais inteligente da Perplexity"
-      },
-      "default": {
-        "model": "perplexity-default",
-        "max_tokens": 16384,
-        "description": "Modelo padrão da Perplexity"
-      }
-    }
-  },
   "dryrun": {
     "models": {
       "default": {

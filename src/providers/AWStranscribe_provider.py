@@ -15,7 +15,7 @@ class AWSTranscribeProvider(BaseProvider):
     def __init__(self):
         super().__init__()
         self.supported_languages = ["pt-BR", "en-US", "es-ES", "fr-FR"]
-        self.supported_media_formats = ["mp3", "wav", "flac"]
+        self.supported_media_formats = ["mp3", "wav", "flac", "m4a"]
         self.default_language = "pt-BR"
         self.default_media_format = "mp3"
         # Clientes AWS
@@ -31,6 +31,16 @@ class AWSTranscribeProvider(BaseProvider):
         if not bucket_name:
             raise Exception("Nenhum bucket especificado.")
         
+        # Validações básicas
+        if not Path(audio_file_path).is_file():
+            raise FileNotFoundError(f"Arquivo de áudio não encontrado: {audio_file_path}")
+        if language_code not in self.supported_languages:
+            print(f"Aviso: Idioma '{language_code}' não suportado. Usando padrão '{self.default_language}'", file=sys.stderr)
+            language_code = self.default_language
+        if media_format.lower() not in self.supported_media_formats:
+            print(f"Aviso: Formato '{media_format}' não suportado. Usando padrão '{self.default_media_format}'", file=sys.stderr)
+            media_format = self.default_media_format
+
         # Nome do arquivo no S3 com timestamp
         file_name = os.path.basename(audio_file_path)
         s3_audio_key = f"audio/{int(time.time())}-{file_name}"
@@ -40,7 +50,8 @@ class AWSTranscribeProvider(BaseProvider):
             # Upload do arquivo para S3
             print(f"Enviando arquivo para S3: s3://{bucket_name}/{s3_audio_key}")
             self.s3_client.upload_file(audio_file_path, bucket_name, s3_audio_key)
-            job_uri = f"s3://{bucket_name}/{self.s3_audio_key}"
+            # Corrige referência incorreta à chave do S3
+            job_uri = f"s3://{bucket_name}/{s3_audio_key}"
 
             # Nome único para o job
             job_name = f"transcription-{int(time.time())}-{os.getpid()}"
