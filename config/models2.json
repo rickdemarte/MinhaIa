@@ -102,28 +102,28 @@
     "models": {
       "fast": {
         "model": "deepseek-chat",
-        "max_tokens":4096,
-        "description":"Modelo Chat simples 4K tokens"
+        "max_tokens": 4096,
+        "description": "Modelo Chat simples 4K tokens"
       },
       "cheap": {
         "model": "deepseek-chat",
-        "max_tokens":4096,
-        "description":"Modelo Chat simples 4K tokens"
+        "max_tokens": 4096,
+        "description": "Modelo Chat simples 4K tokens"
       },
       "smart": {
         "model": "deepseek-reasoner",
-        "max_tokens":32000,
-        "description":"Modelo Reasoner 32K tokens"
+        "max_tokens": 32000,
+        "description": "Modelo Reasoner 32K tokens"
       },
       "smartest": {
         "model": "deepseek-reasoner",
-        "max_tokens":64000,
-        "description":"Modelo Chat Reasoner 64K tokens"
+        "max_tokens": 64000,
+        "description": "Modelo Chat Reasoner 64K tokens"
       },
       "default": {
         "model": "deepseek-chat",
-        "max_tokens":8192,
-        "description":"Modelo Chat simples 8K tokens"
+        "max_tokens": 8192,
+        "description": "Modelo Chat simples 8K tokens"
       }
     }
   },
@@ -156,7 +156,7 @@
       }
     }
   },
-  "qwen":{
+  "qwen": {
     "models": {
       "fast": {
         "model": "qwen-turbo-latest",
@@ -193,9 +193,9 @@
         "description": "Modelo otimizado para velocidade"
       },
       "cheap": {
-          "model": "grok-3-mini",
-          "max_tokens": 131072,
-          "description": "Modelo mais econômico para tarefas leves"
+        "model": "grok-3-mini",
+        "max_tokens": 131072,
+        "description": "Modelo mais econômico para tarefas leves"
       },
       "smart": {
         "model": "grok-3",
@@ -221,7 +221,7 @@
         "max_tokens": 131072,
         "description": "Modelo Llama 3.1 8B instantâneo"
       },
-      "cheap":{
+      "cheap": {
         "model": "meta-llama/llama-4-maverick-17b-128e-instruct",
         "max_tokens": 8192,
         "description": "Versão “maverick”: mais qualidade que o Scout, ainda barata"
@@ -265,7 +265,7 @@
         "max_tokens": 32768,
         "description": "Equilíbrio entre custo e desempenho"
       },
-      "smartest":{
+      "smartest": {
         "model": "models/gemini-2.5-flash-latest",
         "max_tokens": 32768,
         "description": "Mais inteligente"
@@ -319,5 +319,5 @@
         "description": "Modelo apenas para registro para não mecher no código"
       }
     }
-  }
+  }  
 }

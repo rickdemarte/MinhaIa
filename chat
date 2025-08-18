@@ -58,6 +58,8 @@ OPÇÕES DE PROVIDER:
     --grok                      Usa Grok
     --groq                      Usa Groq
     --gemini                    Usa Gemini
+    --perplexity                Usa Perplexity
+
 
 OPÇÕES DE PERSONALIDADE:
     --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")

@@ -26,7 +26,7 @@ class CLIArgumentParser:
 
         # Providers
         parser.add_argument('--provider',
-                          choices=['aws', 'openai', 'assistant', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper', 'groq', 'gemini'],
+                          choices=['aws', 'openai', 'assistant', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper', 'groq', 'gemini', 'perplexity'],
                           default='groq',
                           help='Escolha o provider da API de chat')
         parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
@@ -37,6 +37,7 @@ class CLIArgumentParser:
         parser.add_argument('--grok', action='store_true', help='Usa API da Grok')
         parser.add_argument('--groq', action='store_true', help='Usa API da Groq')
         parser.add_argument('--gemini', action='store_true', help='Usa API do Gemini')
+        parser.add_argument('--perplexity', action='store_true', help='Usa API da Perplexity')
         parser.add_argument('--dryrun', action='store_true', help='Não usa nenhuma API de chat')
         
         # Formatação de saída
@@ -137,6 +138,8 @@ class CLIArgumentParser:
             args.provider = 'gemini'
         elif args.openai:
             args.provider = 'openai'
+        elif args.perplexity:
+            args.provider = 'perplexity'
         elif args.assistant:
             args.provider = 'assistant'
 

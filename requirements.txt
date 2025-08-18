@@ -9,3 +9,4 @@ google-generativeai
 fastapi
 uvicorn
 pydantic
+perplexipy
