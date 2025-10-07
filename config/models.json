@@ -282,6 +282,42 @@
       }
     }
   },
+  "perplexity": {
+    "models": {
+      "fast": {
+        "model": "sonar",
+        "max_tokens": 8192,
+        "description": "rápido e econômico"
+      },
+      "cheap": {
+        "model": "sonar",
+        "max_tokens": 8192,
+        "description": "rápido e econômico"
+      },
+      "smart": {
+        "model": "sonar-reasoning",
+        "max_tokens": 16384,
+        "description": "equilibrado",
+        "is_o_model": true
+      },
+      "smartest": {
+        "model": "sonar-pro",
+        "max_tokens": 16384,
+        "description": "equilibrado"
+      },
+      "absurdo": {
+        "model": "sonar-reasoning-pro",
+        "max_tokens": 16384,
+        "description": "equilibrado",
+        "is_o_model": true
+      },
+      "default": {
+        "model": "llama-3.1-sonar-large-128k-online",
+        "max_tokens": 8192,
+        "description": "padrão"
+      }
+    }
+  },
   "dryrun": {
     "models": {
       "default": {

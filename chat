@@ -36,7 +36,7 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|assistant|claude|deepseek|qwen|grok|gemini]  Escolhe o provider (padrão: openai)
+    --provider [openai|assistant|claude|deepseek|qwen|grok|gemini|perplexity]  Escolhe o provider (padrão: openai)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
@@ -104,6 +104,7 @@ VARIÁVEIS DE AMBIENTE:
     GROK_API_KEY                Chave da API Grok
     GROQ_API_KEY                Chave da API Groq
     GOOGLE_API_KEY             Chave da API Gemini
+    PERPLEXITY_API_KEY         Chave da API Perplexity
 
 Para mais informações: https://github.com/rickdemarte/MinhaIa.git
 EOF
@@ -140,7 +141,7 @@ check_dependencies() {
     # Verifica bibliotecas Python
     echo -e "\n${BLUE}Verificando bibliotecas Python...${NC}"
     
-    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq google.generativeai; do
+    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq google.generativeai perplexipy; do
         if python3 -c "import $lib" 2>/dev/null; then
             echo -e "${GREEN}✓ $lib instalado${NC}"
         else
@@ -210,6 +211,13 @@ check_dependencies() {
     else
         echo -e "${YELLOW}⚠ GOOGLE_API_KEY não configurada${NC}"
         echo "    Configure com: export GOOGLE_API_KEY='sua-chave'"
+    fi
+
+    if [ -n "$PERPLEXITY_API_KEY" ]; then
+        echo -e "${GREEN}✓ PERPLEXITY_API_KEY configurada${NC}"
+    else
+        echo -e "${YELLOW}⚠ PERPLEXITY_API_KEY não configurada${NC}"
+        echo "    Configure com: export PERPLEXITY_API_KEY='sua-chave'"
     fi
 
     if [ $missing_deps -eq 1 ]; then
