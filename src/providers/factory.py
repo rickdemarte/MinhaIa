@@ -4,7 +4,7 @@ from providers.claude_provider import ClaudeProvider
 from providers.deepseek_provider import DeepSeekProvider
 from providers.alibaba_provider import Qwen3Provider
 from providers.grok_provider import GrokProvider
-from providers.openaiWhisper_provider import WhisperProvider
+#from providers.openaiWhisper_provider import WhisperProvider
 from providers.AWStranscribe_provider import AWSTranscribeProvider
 from providers.groq_provider import GroqProvider
 from providers.gemini_provider import GeminiProvider
@@ -22,7 +22,7 @@ class ProviderFactory:
         'deepseek': DeepSeekProvider,
         'qwen': Qwen3Provider,
         'grok': GrokProvider,
-        'whisper': WhisperProvider,
+#        'whisper': WhisperProvider,
         'aws_transcribe': AWSTranscribeProvider,
         'groq': GroqProvider,
         'gemini': GeminiProvider,
