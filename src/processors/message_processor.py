@@ -41,7 +41,7 @@ class MessageProcessor:
         if provider_name != 'whisper':
             try:
                 provider = AWSTranscribeProvider()
-                bucket_name, _, _ = config_manager.get_model_config(args, provider_name)
+                bucket_name = config_manager.get_transcription_bucket()
                 response = provider.call_api(
                     audiofile, 
                     language_code="pt-BR", 

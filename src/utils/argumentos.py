@@ -91,19 +91,14 @@ class CLIArgumentParser:
         """Valida combinações de argumentos"""
         # Validação para transcrição
         if args.transcribe:
-            if args.openai:
-                args.provider = 'openai'
-            if args.provider:
-                if args.provider == 'openai':
-                    args.provider = 'whisper'
-                elif args.provider not in ['openai', 'dryrun']:
-                    print(f"Erro: --transcribe só pode ser usado com openai ou sem provider (--dryrun)\nVocê forneceu {args.provider}", 
-                          file=sys.stderr)
-                    sys.exit(1)
-                else:
-                    args.provider = 'aws'
-        elif not args.provider:
-            args.provider = 'openai'
+            provider = args.provider
+            if args.openai or provider == 'openai' or provider == 'whisper':
+                args.provider = 'whisper'
+            elif provider in ['aws', 'dryrun']:
+                args.provider = 'aws'
+            else:
+                print("Erro: --transcribe só pode ser usado com --provider openai/whisper ou --provider aws", file=sys.stderr)
+                sys.exit(1)
         
         # Validação para áudio
         if args.polly and args.voz:

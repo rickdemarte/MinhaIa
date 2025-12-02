@@ -4,11 +4,11 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional
 from os import path
 import json
+from types import SimpleNamespace
 
 from providers.factory import ProviderFactory
 from config.manager import ConfigManager
 from constants import DEFAULT_SYSTEM_PROMPT
-from utils.argumentos import CLIArgumentParser
 from utils.error_handler import SecureErrorHandler
 
 app = FastAPI()
@@ -66,26 +66,38 @@ def validate_token(credentials: HTTPAuthorizationCredentials = Depends(security)
 config_manager = ConfigManager()
 provider_factory = ProviderFactory()
 
+def _build_capacidade_args(capacidade: Optional[str]) -> SimpleNamespace:
+    """Create a lightweight args object compatible with ConfigManager."""
+    capa = (capacidade or 'default').lower()
+    return SimpleNamespace(
+        transcribe=False,
+        fast=capa == 'fast',
+        cheap=capa == 'cheap',
+        smart=capa == 'smart',
+        smartest=capa == 'smartest',
+        absurdo=capa == 'absurdo',
+        model=None,
+        max_tokens=None
+    )
+
+
 @app.post("/chat", response_model=MessageResponse)
 def trata_mensagem(req: MessageRequest, token: str = Depends(validate_token)):
-    argumentos = CLIArgumentParser().parse_args()
     try:
-        argumentos.provider = req.provider or 'groq'
-        capacidade = req.capacidade or 'default'
-        is_o_model = capacidade == 'absurdo' and argumentos.provider == 'openai'
-        
-        argumentos.persona = req.persona or DEFAULT_SYSTEM_PROMPT
-        
-        modelo, max_tokens, is_o_model = config_manager.get_model_config(argumentos, argumentos.provider)
+        provider_name = (req.provider or 'groq').lower()
+        persona = req.persona or DEFAULT_SYSTEM_PROMPT
+        capacidade_args = _build_capacidade_args(req.capacidade)
+
+        modelo, max_tokens, is_o_model = config_manager.get_model_config(capacidade_args, provider_name)
         print(f"Modelo: {modelo}, Max Tokens: {max_tokens}")
         
-        provider = provider_factory.create_provider(argumentos.provider)
+        provider = provider_factory.create_provider(provider_name)
         resposta = provider.call_api(
             req.texto, 
             modelo, 
             max_tokens, 
             is_o_model=is_o_model, 
-            persona=argumentos.persona
+            persona=persona
         )
         return MessageResponse(resposta=resposta, modelo=modelo)
     except Exception as e:

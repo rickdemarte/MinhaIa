@@ -1,5 +1,5 @@
-import os
 import sys
+import subprocess
 
 from providers.openaiTTS_provider import OpenAIAudio
 from providers.AWSpolly_provider import AWSPollyProvider
@@ -79,7 +79,14 @@ class ResponseHandler:
         
         if args.ouvir:
             print(f"Tentando ouvir áudio: {audio_file}...", file=sys.stderr)
-            # if audio_file exists
-            if args.voz or args.polly:
+            if (args.voz or args.polly) and audio_file:
                 print(f"Reproduzindo áudio: {audio_file}", file=sys.stderr)
-                os.system(f"mpg123 {audio_file} > /dev/null 2>&1")
+                try:
+                    subprocess.run(
+                        ["mpg123", audio_file],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        check=False
+                    )
+                except FileNotFoundError:
+                    print("Erro: 'mpg123' não encontrado. Instale o player ou remova --ouvir.", file=sys.stderr)

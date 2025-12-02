@@ -21,6 +21,15 @@ class ConfigManager:
                 print(f"Erro: Arquivo de configuração não encontrado: {self._config_path}", file=sys.stderr)
                 sys.exit(1)
         return self._models_config
+
+    def get_transcription_bucket(self) -> str:
+        """Return the bucket name configured for AWS Transcribe"""
+        models_config = self.load_models_config()
+        try:
+            return models_config['aws']['models']['transcribe']['bucket_name']
+        except KeyError:
+            print("Erro: Configuração de bucket para AWS Transcribe não encontrada em config/models.json", file=sys.stderr)
+            sys.exit(1)
     
     def get_model_config(self, args, provider: str) -> Tuple[str, int, bool]:
         """Determine which model to use based on arguments"""

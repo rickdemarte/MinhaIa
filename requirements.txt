@@ -4,6 +4,7 @@ pdfplumber==0.11.7
 boto3==1.39.3
 xai_sdk
 pydub
+audioop-lts
 groq
 google-generativeai
 fastapi
