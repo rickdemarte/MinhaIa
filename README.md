@@ -79,10 +79,9 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    ./chat --setup
    ```
 
-   **Recomendo usar a extensão -force para forçar a instação das dependências**
+   **Recomendo usar o ambiente virtual para isolar dependências**
    ```bash
-   # Adiciona --break-system-packages ao instalar as dependências em Python
-   ./chat --setup-force
+   ./chat --install-deps-venv
    ```
 
    **Execute a verificação de dependências**
@@ -104,9 +103,14 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    ```bash
    ./chat --install-deps
    ```
-   **Recomendo usar a extensão -force para forçar a instação das dependências**
+
+   **Para manter o ambiente isolado (recomendado)**
    ```bash
-   # Adiciona --break-system-packages
+   ./chat --install-deps-venv
+   ```
+
+   **Use --install-deps-force apenas se precisar instalar fora do venv com break-system-packages**
+   ```bash
    ./chat --install-deps-force
    ```
 
@@ -119,6 +123,7 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    - `GROK_API_KEY`: Chave da API Grok.
    - `GROQ_API_KEY`: Chave da API Groq.
    - `GOOGLE_API_KEY`: Chave da API Gemini.
+   - `PERPLEXITY_API_KEY`: Chave da API Perplexity.
 
 5. **Execute o cliente**:
    ```bash
@@ -137,7 +142,7 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|assistant|claude|deepseek|qwen|grok|gemini]  Escolhe o provider (padrão: openai)
+    --provider [openai|assistant|claude|deepseek|qwen|grok|gemini|perplexity]  Escolhe o provider (padrão: openai)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
@@ -147,6 +152,7 @@ OPÇÕES DE CONFIGURAÇÃO / INSTALAÇÃO:
     --setup-force [LOCAL]       Cria estrutura inicial do projeto (força instalação removendo diretório existente e forçando instalação de dependências)
     --check-deps                Verifica dependências do sistema
     --install-deps              Instala dependências Python
+    --install-deps-venv         Instala dependências Python em um ambiente virtual
     --install-deps-force        Instala dependências Python (forçado usando --break-system-packages)
 
 OPÇÕES DE PROVIDER:
@@ -158,11 +164,7 @@ OPÇÕES DE PROVIDER:
     --grok                      Usa Grok
     --groq                      Usa Groq
     --gemini                    Usa Gemini
-    --perplecity                Usa Perplecity
-
-
-OPÇÕES DE HISTÓRICO:
-    --persistent [yes|no]       Armazena ou remove histórico no servidor da OpenAI (usar com --openai)
+    --perplexity                Usa Perplexity
 
 OPÇÕES DE PERSONALIDADE:
     --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
@@ -191,7 +193,7 @@ OPÇÕES DE ENTRADA:
     --codigo ARQUIVO            Analisa arquivo de código
     --pdf ARQUIVO               Analisa arquivo PDF
     --texto ARQUIVO             Lê texto de arquivo
-    --files ARQ1 ARQ2...        Envia múltiplos arquivos para Assistants API
+    --arquivos ARQ1 ARQ2...     Envia múltiplos arquivos para Assistants API
 
 EXEMPLOS:
     chat "Explique firewall"
@@ -207,6 +209,7 @@ VARIÁVEIS DE AMBIENTE:
     GROK_API_KEY                Chave da API Grok
     GROQ_API_KEY                Chave da API Groq
     GOOGLE_API_KEY              Chave da API Gemini
+    PERPLEXITY_API_KEY          Chave da API Perplexity
 
 ```
 
@@ -226,4 +229,3 @@ chat "Resuma" --pdf documento.pdf -f resumo.txt
 
 ## Contribuição
 Contribuições são bem-vindas! Se você gostaria de contribuir com o projeto, sinta-se à vontade para abrir um pull request ou relatar um problema no repositório.
-
