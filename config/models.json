@@ -242,9 +242,9 @@
         "description": "Modelo da OpenAI GPT-OSS 120B"
       },
       "default": {
-        "model": "openai/gpt-oss-120b",
+        "model": "groq/compound",
         "max_tokens": 8192,
-        "description": "Modelo da OpenAI GPT-OSS 120B"
+        "description": "Compound com GPT 120B e Llama 4"
       }
     }
   },

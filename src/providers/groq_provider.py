@@ -60,7 +60,7 @@ class GroqProvider(BaseProvider):
 
     def _extrair_resposta_o_model(self, response):
         nerd_stats = response.response_metadata.get("token_usage")
-        print(f"\nEstatísticas para Nerds: {str(nerd_stats)}")
+        print(f"\nEstatísticas para Nerds: {str(nerd_stats)}\n\n")
         try:
             for item in response.output:
                 if item.content and len(item.content) > 0:
