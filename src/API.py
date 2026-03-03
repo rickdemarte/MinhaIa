@@ -88,8 +88,8 @@ def trata_mensagem(req: MessageRequest, token: str = Depends(validate_token)):
         persona = req.persona or DEFAULT_SYSTEM_PROMPT
         capacidade_args = _build_capacidade_args(req.capacidade)
 
-        modelo, max_tokens, is_o_model = config_manager.get_model_config(capacidade_args, provider_name)
-        print(f"Modelo: {modelo}, Max Tokens: {max_tokens}")
+        modelo, max_tokens, is_o_model, temperature = config_manager.get_model_config(capacidade_args, provider_name)
+        print(f"Modelo: {modelo}, Max Tokens: {max_tokens}, Temperature: {temperature}")
         
         provider = provider_factory.create_provider(provider_name)
         resposta = provider.call_api(
@@ -97,7 +97,8 @@ def trata_mensagem(req: MessageRequest, token: str = Depends(validate_token)):
             modelo, 
             max_tokens, 
             is_o_model=is_o_model, 
-            persona=persona
+            persona=persona,
+            temperature=temperature
         )
         return MessageResponse(resposta=resposta, modelo=modelo)
     except Exception as e:

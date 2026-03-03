@@ -6,7 +6,8 @@
         "max_tokens": 1,
         "bucket_name": "ribeiro",
         "description": "Modelo de transcrição de áudio da AWS",
-        "is_transcribe": true
+        "is_transcribe": true,
+        "temperature": 0.7
       }
     }
   },
@@ -16,19 +17,22 @@
         "model": "whisper-1",
         "max_tokens": 20000,
         "description": "Modelo de transcrição de áudio da OpenAI",
-        "is_transcribe": true
+        "is_transcribe": true,
+        "temperature": 0.7
       },
       "smart": {
         "model": "gpt-4o-transcribe",
         "max_tokens": 20000,
         "description": "Modelo de transcrição de áudio da OpenAI",
-        "is_transcribe": true
+        "is_transcribe": true,
+        "temperature": 0.7
       },
       "fast": {
         "model": "gpt-4o-mini-transcribe",
         "max_tokens": 2000,
         "description": "Modelo de transcrição de áudio da OpenAI",
-        "is_transcribe": true
+        "is_transcribe": true,
+        "temperature": 0.7
       }
     }
   },
@@ -37,34 +41,40 @@
       "fast": {
         "model": "gpt-4o-mini",
         "max_tokens": 4096,
-        "description": "rápido e econômico"
+        "description": "rápido e econômico",
+        "temperature": 0.7
       },
       "cheap": {
         "model": "gpt-4o-mini",
         "max_tokens": 4096,
-        "description": "rápido e econômico"
+        "description": "rápido e econômico",
+        "temperature": 0.7
       },
       "smart": {
         "model": "gpt-4o",
         "max_tokens": 16384,
-        "description": "equilibrado"
+        "description": "equilibrado",
+        "temperature": 0.7
       },
       "smartest": {
         "model": "o3-mini",
         "max_tokens": 100000,
         "description": "raciocínio profundo",
-        "is_o_model": true
+        "is_o_model": true,
+        "temperature": 0.7
       },
       "absurdo": {
         "model": "o3",
         "max_tokens": 100000,
         "description": "máximo poder",
-        "is_o_model": true
+        "is_o_model": true,
+        "temperature": 0.7
       },
       "default": {
         "model": "chatgpt-4o-latest",
         "max_tokens": 8192,
-        "description": "padrão"
+        "description": "padrão",
+        "temperature": 0.7
       }
     }
   },
@@ -73,28 +83,33 @@
       "fast": {
         "model": "gpt-4.1-nano",
         "max_tokens": 32768,
-        "description": "rápido e econômico"
+        "description": "rápido e econômico",
+        "temperature": 0.7
       },
       "cheap": {
         "model": "gpt-4o-mini",
         "max_tokens": 8192,
-        "description": "rápido e econômico"
+        "description": "rápido e econômico",
+        "temperature": 0.7
       },
       "smart": {
         "model": "gpt-4.1",
         "max_tokens": 32768,
-        "description": "equilibrado"
+        "description": "equilibrado",
+        "temperature": 0.7
       },
       "smartest": {
         "model": "o3-mini",
         "max_tokens": 100000,
         "description": "Reasoning, mas nem tanto",
-        "is_o_model": true
+        "is_o_model": true,
+        "temperature": 0.7
       },
       "default": {
         "model": "gpt-4.1",
         "max_tokens": 32768,
-        "description": "Resposta padrão, mas não é de graça"
+        "description": "Resposta padrão, mas não é de graça",
+        "temperature": 0.7
       }
     }
   },
@@ -102,28 +117,33 @@
     "models": {
       "fast": {
         "model": "deepseek-chat",
-        "max_tokens":4096,
-        "description":"Modelo Chat simples 4K tokens"
+        "max_tokens": 4096,
+        "description": "Modelo Chat simples 4K tokens",
+        "temperature": 0.7
       },
       "cheap": {
         "model": "deepseek-chat",
-        "max_tokens":4096,
-        "description":"Modelo Chat simples 4K tokens"
+        "max_tokens": 4096,
+        "description": "Modelo Chat simples 4K tokens",
+        "temperature": 0.7
       },
       "smart": {
         "model": "deepseek-reasoner",
-        "max_tokens":32000,
-        "description":"Modelo Reasoner 32K tokens"
+        "max_tokens": 32000,
+        "description": "Modelo Reasoner 32K tokens",
+        "temperature": 0.7
       },
       "smartest": {
         "model": "deepseek-reasoner",
-        "max_tokens":64000,
-        "description":"Modelo Chat Reasoner 64K tokens"
+        "max_tokens": 64000,
+        "description": "Modelo Chat Reasoner 64K tokens",
+        "temperature": 0.7
       },
       "default": {
         "model": "deepseek-chat",
-        "max_tokens":8192,
-        "description":"Modelo Chat simples 8K tokens"
+        "max_tokens": 8192,
+        "description": "Modelo Chat simples 8K tokens",
+        "temperature": 0.7
       }
     }
   },
@@ -132,27 +152,32 @@
       "fast": {
         "model": "claude-3-5-haiku-20241022",
         "max_tokens": 8192,
-        "description": "rápido e econômico"
+        "description": "rápido e econômico",
+        "temperature": 0.7
       },
       "cheap": {
         "model": "claude-3-5-haiku-20241022",
         "max_tokens": 8192,
-        "description": "rápido e econômico"
+        "description": "rápido e econômico",
+        "temperature": 0.7
       },
       "smart": {
         "model": "claude-sonnet-4-20250514",
         "max_tokens": 8192,
-        "description": "equilibrado"
+        "description": "equilibrado",
+        "temperature": 0.7
       },
       "smartest": {
         "model": "claude-opus-4-20250514",
         "max_tokens": 8192,
-        "description": "mais inteligente"
+        "description": "mais inteligente",
+        "temperature": 0.7
       },
       "default": {
         "model": "claude-3-7-sonnet-20250219",
         "max_tokens": 64000,
-        "description": "padrão"
+        "description": "padrão",
+        "temperature": 0.7
       }
     }
   },
@@ -161,56 +186,66 @@
       "fast": {
         "model": "kimi-k2-turbo-preview",
         "max_tokens": 8192,
-        "description": "rápido e econômico (K2 Turbo)"
+        "description": "rápido e econômico (K2 Turbo)",
+        "temperature": 0.7
       },
       "cheap": {
         "model": "kimi-k2-0711-preview",
         "max_tokens": 8192,
-        "description": "rápido e econômico (K2 0711)"
+        "description": "rápido e econômico (K2 0711)",
+        "temperature": 0.7
       },
       "smart": {
         "model": "kimi-k2-0905-preview",
         "max_tokens": 32768,
-        "description": "equilibrado (K2 0905)"
+        "description": "equilibrado (K2 0905)",
+        "temperature": 0.7
       },
       "smartest": {
         "model": "kimi-k2.5",
         "max_tokens": 131072,
-        "description": "mais inteligente (K2.5)"
+        "description": "mais inteligente (K2.5)",
+        "temperature": 1
       },
       "default": {
         "model": "kimi-k2-thinking",
         "max_tokens": 131072,
-        "description": "padrão (K2 Thinking)"
+        "description": "padrão (K2 Thinking)",
+        "temperature": 0.7
       }
     }
   },
-  "qwen":{
+  "qwen": {
     "models": {
       "fast": {
         "model": "qwen-turbo-latest",
         "max_tokens": 8192,
-        "description": "modelo rápido e econômico para tarefas simples"
+        "description": "modelo rápido e econômico para tarefas simples",
+        "temperature": 0.7
       },
       "cheap": {
         "model": "qwen-turbo-latest",
         "max_tokens": 8192,
-        "description": "modelo rápido e econômico para tarefas simples"
+        "description": "modelo rápido e econômico para tarefas simples",
+        "temperature": 0.7
       },
       "smart": {
         "model": "qwen-max",
         "max_tokens": 8192,
-        "description": "maior capacidade de raciocínio, ideal para tarefas complexas"
+        "description": "maior capacidade de raciocínio, ideal para tarefas complexas",
+        "temperature": 0.7
       },
       "smartest": {
         "model": "qvq-max",
         "max_tokens": 8192,
-        "description": "Modelo Reasoner 8K tokens"
+        "description": "Modelo Reasoner 8K tokens",
+        "temperature": 0.7
       },
       "default": {
         "model": "qwen-plus",
         "max_tokens": 8192,
-        "description": "equilíbrio entre custo e desempenho para tarefas mais complexas"
+        "description": "equilíbrio entre custo e desempenho para tarefas mais complexas",
+        "temperature": 0.7
       }
     }
   },
@@ -219,27 +254,32 @@
       "fast": {
         "model": "grok-3-fast",
         "max_tokens": 131072,
-        "description": "Modelo otimizado para velocidade"
+        "description": "Modelo otimizado para velocidade",
+        "temperature": 0.7
       },
       "cheap": {
-          "model": "grok-3-mini",
-          "max_tokens": 131072,
-          "description": "Modelo mais econômico para tarefas leves"
+        "model": "grok-3-mini",
+        "max_tokens": 131072,
+        "description": "Modelo mais econômico para tarefas leves",
+        "temperature": 0.7
       },
       "smart": {
         "model": "grok-3",
         "max_tokens": 131072,
-        "description": "Modelo padrão para tarefas empresariais"
+        "description": "Modelo padrão para tarefas empresariais",
+        "temperature": 0.7
       },
       "smartest": {
         "model": "grok-3",
         "max_tokens": 131072,
-        "description": "Melhor modelo não-raciocinante"
+        "description": "Melhor modelo não-raciocinante",
+        "temperature": 0.7
       },
       "absurdo": {
         "model": "grok-4-0709",
         "max_tokens": 256000,
-        "description": "Melhor modelo raciocinante com alta capacidade"
+        "description": "Melhor modelo raciocinante com alta capacidade",
+        "temperature": 0.7
       }
     }
   },
@@ -248,32 +288,38 @@
       "fast": {
         "model": "llama-3.1-8b-instant",
         "max_tokens": 131072,
-        "description": "Modelo Llama 3.1 8B instantâneo"
+        "description": "Modelo Llama 3.1 8B instantâneo",
+        "temperature": 0.7
       },
-      "cheap":{
+      "cheap": {
         "model": "meta-llama/llama-4-maverick-17b-128e-instruct",
         "max_tokens": 8192,
-        "description": "Versão “maverick”: mais qualidade que o Scout, ainda barata"
+        "description": "Versão “maverick”: mais qualidade que o Scout, ainda barata",
+        "temperature": 0.7
       },
       "smart": {
         "model": "qwen/qwen3-32b",
         "max_tokens": 40960,
-        "description": "Modelo Qwen 3 32B com alta capacidade de raciocínio"
+        "description": "Modelo Qwen 3 32B com alta capacidade de raciocínio",
+        "temperature": 0.7
       },
       "smartest": {
         "model": "deepseek-r1-distill-llama-70b",
         "max_tokens": 131072,
-        "description": "Modelo DeepSeek R1 destilado em Llama 70B"
+        "description": "Modelo DeepSeek R1 destilado em Llama 70B",
+        "temperature": 0.7
       },
       "absurdo": {
         "model": "openai/gpt-oss-120b",
         "max_tokens": 32766,
-        "description": "Modelo da OpenAI GPT-OSS 120B"
+        "description": "Modelo da OpenAI GPT-OSS 120B",
+        "temperature": 0.7
       },
       "default": {
         "model": "groq/compound",
         "max_tokens": 8192,
-        "description": "Compound com GPT 120B e Llama 4"
+        "description": "Compound com GPT 120B e Llama 4",
+        "temperature": 0.7
       }
     }
   },
@@ -282,32 +328,38 @@
       "fast": {
         "model": "models/gemini-2.5-flash-lite",
         "max_tokens": 8192,
-        "description": "Resposta rápida e econômica"
+        "description": "Resposta rápida e econômica",
+        "temperature": 0.7
       },
       "cheap": {
         "model": "models/gemini-2.0-flash-lite",
         "max_tokens": 8192,
-        "description": "Resposta rápida e econômica"
+        "description": "Resposta rápida e econômica",
+        "temperature": 0.7
       },
       "smart": {
         "model": "models/gemini-1.5-pro-latest",
         "max_tokens": 32768,
-        "description": "Equilíbrio entre custo e desempenho"
+        "description": "Equilíbrio entre custo e desempenho",
+        "temperature": 0.7
       },
-      "smartest":{
+      "smartest": {
         "model": "models/gemini-2.5-flash-latest",
         "max_tokens": 32768,
-        "description": "Mais inteligente"
+        "description": "Mais inteligente",
+        "temperature": 0.7
       },
       "absurdo": {
         "model": "models/gemini-2.5-pro-latest",
         "max_tokens": 32768,
-        "description": "Melhor modelo não-raciocinante"
+        "description": "Melhor modelo não-raciocinante",
+        "temperature": 0.7
       },
       "default": {
         "model": "models/gemini-2.5-flash",
         "max_tokens": 32768,
-        "description": "padrão"
+        "description": "padrão",
+        "temperature": 0.7
       }
     }
   },
@@ -316,34 +368,40 @@
       "fast": {
         "model": "sonar",
         "max_tokens": 8192,
-        "description": "rápido e econômico"
+        "description": "rápido e econômico",
+        "temperature": 0.7
       },
       "cheap": {
         "model": "sonar",
         "max_tokens": 8192,
-        "description": "rápido e econômico"
+        "description": "rápido e econômico",
+        "temperature": 0.7
       },
       "smart": {
         "model": "sonar-reasoning",
         "max_tokens": 16384,
         "description": "equilibrado",
-        "is_o_model": true
+        "is_o_model": true,
+        "temperature": 0.7
       },
       "smartest": {
         "model": "sonar-pro",
         "max_tokens": 16384,
-        "description": "equilibrado"
+        "description": "equilibrado",
+        "temperature": 0.7
       },
       "absurdo": {
         "model": "sonar-reasoning-pro",
         "max_tokens": 16384,
         "description": "equilibrado",
-        "is_o_model": true
+        "is_o_model": true,
+        "temperature": 0.7
       },
       "default": {
         "model": "llama-3.1-sonar-large-128k-online",
         "max_tokens": 8192,
-        "description": "padrão"
+        "description": "padrão",
+        "temperature": 0.7
       }
     }
   },
@@ -352,7 +410,8 @@
       "default": {
         "model": "Nenhum",
         "max_tokens": 1,
-        "description": "Modelo apenas para registro para não mecher no código"
+        "description": "Modelo apenas para registro para não mecher no código",
+        "temperature": 0.7
       }
     }
   }

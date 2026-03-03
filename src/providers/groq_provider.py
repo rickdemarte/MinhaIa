@@ -24,6 +24,7 @@ class GroqProvider(BaseProvider):
 
         try:
             persona = kwargs.get("persona", O_MODEL_SYSTEM_PROMPT if is_o_model else DEFAULT_SYSTEM_PROMPT)
+            temperature = kwargs.get("temperature", 0.7)
             print(f"Usando modelo Groq: {model} - (max_tokens: {max_tokens}) {persona}", file=sys.stderr)
 
             if is_o_model:
@@ -41,7 +42,7 @@ class GroqProvider(BaseProvider):
                 response = self.client.chat.completions.create(
                     model=model,
                     max_tokens=max_tokens,
-                    temperature=0.7,
+                    temperature=temperature,
                     messages=[
                         {"role": "system", "content": persona},
                         {"role": "user", "content": message}

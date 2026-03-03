@@ -40,7 +40,7 @@ class ConfigManager:
         provider_name = (provider or "").lower()
         return self.PROVIDER_ALIASES.get(provider_name, provider_name)
     
-    def get_model_config(self, args, provider: str) -> Tuple[str, int, bool]:
+    def get_model_config(self, args, provider: str) -> Tuple[str, int, bool, float]:
         """Determine which model to use based on arguments"""
         models_config = self.load_models_config()
         provider = self.normalize_provider(provider)
@@ -51,7 +51,7 @@ class ConfigManager:
         # Handle transcription
         if args.transcribe:
             if provider not in ['openai', 'whisper']:
-                return provider_models['transcribe']['bucket_name'], 0, False
+                return provider_models['transcribe']['bucket_name'], 0, False, 0.7
         
         # Handle model tier selection
         if args.fast and 'fast' in provider_models:
@@ -68,11 +68,16 @@ class ConfigManager:
             config = provider_models['absurdo']
         elif args.model:
             # Custom model
-            return args.model, 4096, False
+            return args.model, 4096, False, 0.7
         else:
             config = provider_models['default']
         
-        return config['model'], config['max_tokens'], config.get('is_o_model', False)
+        return (
+            config['model'],
+            config['max_tokens'],
+            config.get('is_o_model', False),
+            config.get('temperature', 0.7),
+        )
     
     def list_available_models(self) -> None:
         """Print all available models"""

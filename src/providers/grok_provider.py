@@ -26,7 +26,8 @@ class GrokProvider(BaseProvider):
         try:
             from xai_sdk.chat import user, system
             print(f"Usando modelo Grok: {model} (max_tokens: {max_tokens})", file=sys.stderr)
-            chat = self.client.chat.create(model=model, temperature=0.7, max_output_tokens=max_tokens)
+            temperature = kwargs.get("temperature", 0.7)
+            chat = self.client.chat.create(model=model, temperature=temperature, max_output_tokens=max_tokens)
             persona = kwargs.get("persona", DEFAULT_SYSTEM_PROMPT)
             if persona:
                 chat.append(system(persona))

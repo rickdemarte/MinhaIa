@@ -25,10 +25,11 @@ class DeepSeekProvider(BaseProvider):
         try:
             print(f"Usando modelo DeepSeek: {model} (max_tokens: {max_tokens})", file=sys.stderr)
             persona = kwargs.get("persona", DEFAULT_SYSTEM_PROMPT)
+            temperature = kwargs.get("temperature", 0.7)
             response = self.client.chat.completions.create(
                 model=model,
                 max_tokens=max_tokens,
-                temperature=0.7,
+                temperature=temperature,
                 messages=[
                     {"role": "system", "content": persona},
                     {"role": "user", "content": message}

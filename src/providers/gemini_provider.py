@@ -27,11 +27,12 @@ class GeminiProvider(BaseProvider):
         try:
             print(f"Usando modelo Gemini: {model} (max_tokens: {max_tokens})", file=sys.stderr)
             persona = kwargs.get("persona", DEFAULT_SYSTEM_PROMPT)
+            temperature = kwargs.get("temperature", 0.7)
             generative_model = genai.GenerativeModel(model)
             prompt = f"{persona}\n\n{message}"
             response = generative_model.generate_content(
                 [prompt],
-                generation_config={"max_output_tokens": max_tokens, "temperature": 0.7}
+                generation_config={"max_output_tokens": max_tokens, "temperature": temperature}
             )
             return response.text or ""
         except Exception as e:

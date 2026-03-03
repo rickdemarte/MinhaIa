@@ -66,6 +66,7 @@ class OpenAIProvider(BaseProvider):
         try:
             persona = kwargs.get("persona", O_MODEL_SYSTEM_PROMPT if is_o_model else DEFAULT_SYSTEM_PROMPT)
             persistent = kwargs.get("persistent")
+            temperature = kwargs.get("temperature", 0.7)
             print(f"Usando modelo OpenAI: {model} - (max_tokens: {max_tokens}) {persona}", file=sys.stderr)
 
             prev_id = None
@@ -84,6 +85,9 @@ class OpenAIProvider(BaseProvider):
                     {"role": "user", "content": message}
                 ]
             }
+
+            if not is_o_model:
+                params["temperature"] = temperature
 
             if persistent != 'no':
                 params["store"] = True

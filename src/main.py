@@ -26,7 +26,7 @@ class AIController:
             self.config_manager.list_available_models()
             sys.exit(0)
     
-    def process_api_call(self, args, provider_name: str, mensagem: str, modelo: str, max_tokens: int, is_o_model: bool):
+    def process_api_call(self, args, provider_name: str, mensagem: str, modelo: str, max_tokens: int, is_o_model: bool, temperature: float):
         """Process API call based on provider and arguments"""
         print(f"Enviando para {provider_name.upper()}...", file=sys.stderr)
         if is_o_model:
@@ -35,7 +35,7 @@ class AIController:
         # Handle special cases
         if provider_name == 'whisper':
             provider = self.provider_factory.create_provider('whisper')
-            return provider.call_api(args.transcribe, mensagem, modelo, max_tokens, persona=args.persona)
+            return provider.call_api(args.transcribe, mensagem, modelo, max_tokens, persona=args.persona, temperature=temperature)
         elif provider_name == 'dryrun' and mensagem != '':
             return mensagem
         elif provider_name == 'openai':
@@ -46,15 +46,24 @@ class AIController:
                 max_tokens,
                 is_o_model=is_o_model,
                 persona=args.persona,
-                persistent=getattr(args, 'persistent', None)
+                persistent=getattr(args, 'persistent', None),
+                temperature=temperature
             )
         elif provider_name == 'assistant':
             provider = self.provider_factory.create_provider('assistant')
-            return provider.call_api(mensagem, modelo, max_tokens, persona=args.persona,is_o_model=is_o_model, files=args.arquivos)
+            return provider.call_api(
+                mensagem,
+                modelo,
+                max_tokens,
+                persona=args.persona,
+                is_o_model=is_o_model,
+                files=args.arquivos,
+                temperature=temperature
+            )
         else:
             # Handle other providers
             provider = self.provider_factory.create_provider(provider_name)
-            return provider.call_api(mensagem, modelo, max_tokens, persona=args.persona)
+            return provider.call_api(mensagem, modelo, max_tokens, persona=args.persona, temperature=temperature)
     
     def run(self, args):
         """Main execution method"""
@@ -72,14 +81,14 @@ class AIController:
         mensagem = self.message_processor.validate_message(mensagem, args)
         
         # Get model configuration
-        modelo, max_tokens, is_o_model = self.config_manager.get_model_config(args, args.provider)
+        modelo, max_tokens, is_o_model, temperature = self.config_manager.get_model_config(args, args.provider)
         
         # Override max_tokens if specified
         if args.max_tokens:
             max_tokens = args.max_tokens
         
         # Process API call
-        response = self.process_api_call(args, args.provider, mensagem, modelo, max_tokens, is_o_model)
+        response = self.process_api_call(args, args.provider, mensagem, modelo, max_tokens, is_o_model, temperature)
         
         # Process response
         handler.process_response(response, args)
