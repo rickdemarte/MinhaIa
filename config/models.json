@@ -156,6 +156,35 @@
       }
     }
   },
+  "moonshot": {
+    "models": {
+      "fast": {
+        "model": "kimi-k2-turbo-preview",
+        "max_tokens": 8192,
+        "description": "rápido e econômico (K2 Turbo)"
+      },
+      "cheap": {
+        "model": "kimi-k2-0711-preview",
+        "max_tokens": 8192,
+        "description": "rápido e econômico (K2 0711)"
+      },
+      "smart": {
+        "model": "kimi-k2-0905-preview",
+        "max_tokens": 32768,
+        "description": "equilibrado (K2 0905)"
+      },
+      "smartest": {
+        "model": "kimi-k2.5",
+        "max_tokens": 131072,
+        "description": "mais inteligente (K2.5)"
+      },
+      "default": {
+        "model": "kimi-k2-thinking",
+        "max_tokens": 131072,
+        "description": "padrão (K2 Thinking)"
+      }
+    }
+  },
   "qwen":{
     "models": {
       "fast": {

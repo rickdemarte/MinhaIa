@@ -36,7 +36,7 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|assistant|claude|deepseek|qwen|grok|gemini|perplexity]  Escolhe o provider (padrão: openai)
+    --provider [openai|assistant|claude|deepseek|qwen|grok|groq|gemini|perplexity|moonshot|kimi]  Escolhe o provider (padrão: groq)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
@@ -59,6 +59,7 @@ OPÇÕES DE PROVIDER:
     --groq                      Usa Groq
     --gemini                    Usa Gemini
     --perplexity                Usa Perplexity
+    --kimi                      Usa Moonshot Kimi
 
 
 OPÇÕES DE PERSONALIDADE:
@@ -105,6 +106,7 @@ VARIÁVEIS DE AMBIENTE:
     GROQ_API_KEY                Chave da API Groq
     GOOGLE_API_KEY             Chave da API Gemini
     PERPLEXITY_API_KEY         Chave da API Perplexity
+    KIMI_APY_KEY               Chave da API Moonshot Kimi (compat: KIMI_API_KEY)
 
 Para mais informações: https://github.com/rickdemarte/MinhaIa.git
 EOF
@@ -218,6 +220,13 @@ check_dependencies() {
     else
         echo -e "${YELLOW}⚠ PERPLEXITY_API_KEY não configurada${NC}"
         echo "    Configure com: export PERPLEXITY_API_KEY='sua-chave'"
+    fi
+
+    if [ -n "$KIMI_APY_KEY" ] || [ -n "$KIMI_API_KEY" ]; then
+        echo -e "${GREEN}✓ KIMI_APY_KEY/KIMI_API_KEY configurada${NC}"
+    else
+        echo -e "${YELLOW}⚠ KIMI_APY_KEY/KIMI_API_KEY não configurada${NC}"
+        echo "    Configure com: export KIMI_APY_KEY='sua-chave'"
     fi
 
     if [ $missing_deps -eq 1 ]; then

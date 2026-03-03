@@ -6,6 +6,10 @@ from typing import Dict, Any, Tuple
 
 class ConfigManager:
     """Manages configuration loading and model selection"""
+
+    PROVIDER_ALIASES = {
+        "kimi": "moonshot",
+    }
     
     def __init__(self):
         self._models_config = None
@@ -30,10 +34,16 @@ class ConfigManager:
         except KeyError:
             print("Erro: Configuração de bucket para AWS Transcribe não encontrada em config/models.json", file=sys.stderr)
             sys.exit(1)
+
+    def normalize_provider(self, provider: str) -> str:
+        """Normalize provider aliases to canonical names."""
+        provider_name = (provider or "").lower()
+        return self.PROVIDER_ALIASES.get(provider_name, provider_name)
     
     def get_model_config(self, args, provider: str) -> Tuple[str, int, bool]:
         """Determine which model to use based on arguments"""
         models_config = self.load_models_config()
+        provider = self.normalize_provider(provider)
         print(f"Usando provider: {provider}", file=sys.stderr)
         
         provider_models = models_config[provider]['models']

@@ -84,7 +84,7 @@ def _build_capacidade_args(capacidade: Optional[str]) -> SimpleNamespace:
 @app.post("/chat", response_model=MessageResponse)
 def trata_mensagem(req: MessageRequest, token: str = Depends(validate_token)):
     try:
-        provider_name = (req.provider or 'groq').lower()
+        provider_name = config_manager.normalize_provider((req.provider or 'groq').lower())
         persona = req.persona or DEFAULT_SYSTEM_PROMPT
         capacidade_args = _build_capacidade_args(req.capacidade)
 

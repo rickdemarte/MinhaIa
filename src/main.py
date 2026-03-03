@@ -60,6 +60,7 @@ class AIController:
         """Main execution method"""
         # Handle list models command
         self.handle_list_models(args)
+        args.provider = self.config_manager.normalize_provider(args.provider)
         
         # Handle transcription if requested
         self.message_processor.handle_transcription(args, args.provider, self.config_manager)

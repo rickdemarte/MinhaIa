@@ -91,6 +91,8 @@ class SecureErrorHandler:
                 "deepseek": "Execute: export DEEPSEEK_API_KEY='sua_chave_aqui'",
                 "qwen": "Execute: export QWEN_API_KEY='sua_chave_aqui'",
                 "grok": "Execute: export GROK_API_KEY='sua_chave_aqui'",
+                "moonshot": "Execute: export KIMI_APY_KEY='sua_chave_aqui' (ou KIMI_API_KEY)",
+                "kimi": "Execute: export KIMI_APY_KEY='sua_chave_aqui' (ou KIMI_API_KEY)",
                 "aws": "Configure AWS com: aws configure"
             },
             "dependency_missing": {

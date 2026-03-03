@@ -124,6 +124,7 @@ Para utilizar o AI CLI, você pode executar o comando `chat` seguido de um texto
    - `GROQ_API_KEY`: Chave da API Groq.
    - `GOOGLE_API_KEY`: Chave da API Gemini.
    - `PERPLEXITY_API_KEY`: Chave da API Perplexity.
+   - `KIMI_APY_KEY` (ou `KIMI_API_KEY`): Chave da API Moonshot Kimi.
 
 5. **Execute o cliente**:
    ```bash
@@ -142,7 +143,7 @@ USO:
     chat "texto" [opções]
 
 OPÇÕES PRINCIPAIS:
-    --provider [openai|assistant|claude|deepseek|qwen|grok|gemini|perplexity]  Escolhe o provider (padrão: openai)
+    --provider [openai|assistant|claude|deepseek|qwen|grok|groq|gemini|perplexity|moonshot|kimi]  Escolhe o provider (padrão: groq)
     --help, -h                  Mostra esta ajuda
     --version                   Mostra a versão
     --list-models               Lista modelos disponíveis
@@ -165,6 +166,7 @@ OPÇÕES DE PROVIDER:
     --groq                      Usa Groq
     --gemini                    Usa Gemini
     --perplexity                Usa Perplexity
+    --kimi                      Usa Moonshot Kimi
 
 OPÇÕES DE PERSONALIDADE:
     --persona NOME              Define a personalidade da IA (ex: --persona "engenheiro de software")
@@ -210,6 +212,7 @@ VARIÁVEIS DE AMBIENTE:
     GROQ_API_KEY                Chave da API Groq
     GOOGLE_API_KEY              Chave da API Gemini
     PERPLEXITY_API_KEY          Chave da API Perplexity
+    KIMI_APY_KEY                Chave da API Moonshot Kimi (compat: KIMI_API_KEY)
 
 ```
 

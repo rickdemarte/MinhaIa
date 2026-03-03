@@ -9,6 +9,7 @@ from providers.AWStranscribe_provider import AWSTranscribeProvider
 from providers.groq_provider import GroqProvider
 from providers.gemini_provider import GeminiProvider
 from providers.perplexity_provider import PerplexityProvider
+from providers.moonshot_provider import MoonshotProvider
 
 
 
@@ -27,7 +28,9 @@ class ProviderFactory:
         'aws_transcribe': AWSTranscribeProvider,
         'groq': GroqProvider,
         'gemini': GeminiProvider,
-        'perplexity': PerplexityProvider
+        'perplexity': PerplexityProvider,
+        'moonshot': MoonshotProvider,
+        'kimi': MoonshotProvider
     }
     
     @classmethod
