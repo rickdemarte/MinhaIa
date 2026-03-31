@@ -12,13 +12,17 @@ from constants import DEFAULT_SYSTEM_PROMPT
 from utils.error_handler import SecureErrorHandler
 
 app = FastAPI()
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
+AUTH_ENABLED = False
 
 class MessageRequest(BaseModel):
     texto: str = Field(..., description="Texto da mensagem")
     provider: str = Field('groq', description="Nome do provider", example="groq")
     persona: Optional[str] = Field(None, description="Persona a ser usada")
-    capacidade: Optional[str] = Field('fast', description="Capacidade do modelo: fast, smart, smartest")
+    capacidade: Optional[str] = Field(
+        'fast',
+        description="Capacidade do modelo: fast, cheap, smart, smartest, absurdo"
+    )
 
 class MessageResponse(BaseModel):
     resposta: str
@@ -38,6 +42,9 @@ VALID_KEYS = api_keys.get("chaves", [])
 
 def validate_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Valida o token de autenticação."""
+    if not AUTH_ENABLED:
+        return "anonymous"
+
     if not credentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -113,11 +120,12 @@ def trata_mensagem(req: MessageRequest, token: str = Depends(validate_token)):
         )
 
 # Função para disponibilizar a API de texto
-def start_text_api(host,port, log_level="debug"):
+def start_text_api(host, port, secure=False, log_level="debug"):
     try:
         import uvicorn
-        # inicia uvicorn com Debug ativado
-        uvicorn.run("API:app", host=host, port=port, reload=True, log_level=log_level)
+        global AUTH_ENABLED
+        AUTH_ENABLED = secure
+        uvicorn.run(app, host=host, port=port, reload=False, log_level=log_level)
     except Exception as e:
         SecureErrorHandler.handle_error(
             "API",
