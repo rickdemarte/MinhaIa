@@ -26,11 +26,12 @@ class CLIArgumentParser:
 
         # Providers
         parser.add_argument('--provider',
-                          choices=['aws', 'openai', 'assistant', 'claude', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper', 'groq', 'gemini', 'perplexity', 'moonshot', 'kimi'],
+                          choices=['aws', 'openai', 'assistant', 'claude', 'anthropic', 'deepseek', 'qwen', 'dryrun', 'grok', 'whisper', 'groq', 'gemini', 'perplexity', 'moonshot', 'kimi'],
                           default='groq',
                           help='Escolha o provider da API de chat')
         parser.add_argument('--openai', action='store_true', help='Usa API da OpenAI')
-        parser.add_argument('--assistant', action='store_true', help='Usa Assistants API da OpenAI')
+        parser.add_argument('--assistant', action='store_true', help='Usa OpenAI Responses com ferramentas')
+        parser.add_argument('--anthropic', action='store_true', help='Usa API da Anthropic (alias de --claude)')
         parser.add_argument('--claude', action='store_true', help='Usa API da Anthropic')
         parser.add_argument('--deepseek', action='store_true', help='Usa API da DeepSeek')
         parser.add_argument('--qwen', action='store_true', help='Usa API da Alibaba')
@@ -92,6 +93,8 @@ class CLIArgumentParser:
         """Valida combinações de argumentos"""
         if args.provider == 'kimi':
             args.provider = 'moonshot'
+        elif args.provider == 'anthropic':
+            args.provider = 'claude'
 
         # Validação para transcrição
         if args.transcribe:
@@ -123,6 +126,8 @@ class CLIArgumentParser:
         """Processa atalhos de providers"""
         if args.dryrun:
             args.provider = 'dryrun'
+        elif args.anthropic:
+            args.provider = 'claude'
         elif args.claude:
             args.provider = 'claude'
         elif args.deepseek:
