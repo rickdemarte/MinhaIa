@@ -62,7 +62,7 @@ AI CLI é um cliente unificado que permite a interação com várias APIs de int
 ```
 
 ## Requisitos
-- Python 3.6 ou superior
+- Python 3.9 ou superior
 - Dependências específicas para cada provedor de IA (certifique-se de instalá-las conforme necessário).
 
 ## Como Usar
@@ -157,9 +157,9 @@ OPÇÕES DE CONFIGURAÇÃO / INSTALAÇÃO:
     --install-deps-force        Instala dependências Python (forçado usando --break-system-packages)
 
 OPÇÕES DE PROVIDER:
-    --openai                    Usa OpenAI (padrão)
-    --assistant                 Usa Assistants API da OpenAI
-    --anthropic                 Usa Anthropic
+    --openai                    Usa OpenAI (Responses API)
+    --assistant                 Usa OpenAI Responses com ferramentas
+    --anthropic                 Usa Anthropic (alias de --claude)
     --deepseek                  Usa DeepSeek
     --qwen                      Usa Qwen
     --grok                      Usa Grok
@@ -176,7 +176,7 @@ OPÇÕES DE MODELO:
     --fast                      Modelo rápido e econômico
     --smart                     Modelo equilibrado
     --smartest                  Modelo mais inteligente
-    --absurdo                   Máximo poder (apenas OpenAI)
+    --absurdo                   Máximo poder (OpenAI e Groq)
     --model NOME                Especifica modelo customizado
 
 OPÇÕES DE FORMATAÇÃO:
@@ -232,3 +232,12 @@ chat "Resuma" --pdf documento.pdf -f resumo.txt
 
 ## Contribuição
 Contribuições são bem-vindas! Se você gostaria de contribuir com o projeto, sinta-se à vontade para abrir um pull request ou relatar um problema no repositório.
+
+## Notas sobre OpenAI
+- O provider `openai` usa a Responses API da OpenAI.
+- O provider `assistant` também usa Responses API, mas com ferramentas habilitadas, como `code_interpreter`.
+- A configuração atual de modelos OpenAI em `config/models.json` está alinhada com a linha GPT-5.4/GPT-4.1.
+
+## Notas sobre Gemini
+- O provider `gemini` usa a SDK `google.genai`.
+- Os IDs de modelo Gemini em `config/models.json` usam o formato atual da SDK, como `gemini-2.5-flash`, sem o prefixo `models/`.
