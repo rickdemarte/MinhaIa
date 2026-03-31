@@ -6,7 +6,7 @@ xai_sdk
 pydub
 audioop-lts
 groq
-google-generativeai
+google-genai
 fastapi
 uvicorn
 pydantic
