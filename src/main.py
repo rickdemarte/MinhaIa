@@ -108,7 +108,7 @@ def main():
     args, _ = parser.parse_known_args()
 
     if args.online:
-        start_text_api(args.host or '0.0.0.0', args.port or 8000)
+        start_text_api(args.host or '0.0.0.0', args.port or 8000, args.secure)
     else:
         # CLI tradicional
         cli_parser = CLIArgumentParser()
