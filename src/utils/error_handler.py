@@ -4,13 +4,24 @@ Centralized error handling utility for secure error messages
 import sys
 import logging
 import os
+import tempfile
 from typing import Optional, Dict, Any
 from datetime import datetime
 
-# Configure logging
-log_dir = os.path.expanduser("~/.minhaia/logs")
-os.makedirs(log_dir, exist_ok=True)
 
+def _resolve_log_dir() -> str:
+    configured_dir = os.getenv("MINHAIA_LOG_DIR", os.path.expanduser("~/.minhaia/logs"))
+    try:
+        os.makedirs(configured_dir, exist_ok=True)
+        return configured_dir
+    except OSError:
+        fallback_dir = os.path.join(tempfile.gettempdir(), "minhaia-logs")
+        os.makedirs(fallback_dir, exist_ok=True)
+        return fallback_dir
+
+
+# Configure logging
+log_dir = _resolve_log_dir()
 logging.basicConfig(
     filename=os.path.join(log_dir, f"errors_{datetime.now().strftime('%Y%m%d')}.log"),
     level=logging.ERROR,
