@@ -9,6 +9,7 @@ class ConfigManager:
 
     PROVIDER_ALIASES = {
         "kimi": "moonshot",
+        "anthropic": "claude",
     }
     
     def __init__(self):
