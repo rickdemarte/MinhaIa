@@ -50,9 +50,9 @@ OPÇÕES DE CONFIGURAÇÃO / INSTALAÇÃO:
     --install-deps-force        Instala dependências Python (forçado usando --break-system-packages)
 
 OPÇÕES DE PROVIDER:
-    --openai                    Usa OpenAI (padrão)
-    --assistant                 Usa Assistants API da OpenAI
-    --anthropic                 Usa Anthropic
+    --openai                    Usa OpenAI (Responses API)
+    --assistant                 Usa OpenAI Responses com ferramentas
+    --anthropic                 Usa Anthropic (alias de --claude)
     --deepseek                  Usa DeepSeek
     --qwen                      Usa Qwen
     --grok                      Usa Grok
@@ -143,7 +143,7 @@ check_dependencies() {
     # Verifica bibliotecas Python
     echo -e "\n${BLUE}Verificando bibliotecas Python...${NC}"
     
-    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq google.generativeai perplexipy; do
+    for lib in openai anthropic pdfplumber xai_sdk pydub boto3 groq google.genai perplexipy; do
         if python3 -c "import $lib" 2>/dev/null; then
             echo -e "${GREEN}✓ $lib instalado${NC}"
         else
