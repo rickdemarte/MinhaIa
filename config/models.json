@@ -39,40 +39,38 @@
   "openai": {
     "models": {
       "fast": {
-        "model": "gpt-4o-mini",
-        "max_tokens": 4096,
+        "model": "gpt-5.4-nano",
+        "max_tokens": 32768,
         "description": "rápido e econômico",
         "temperature": 0.7
       },
       "cheap": {
-        "model": "gpt-4o-mini",
-        "max_tokens": 4096,
-        "description": "rápido e econômico",
+        "model": "gpt-5.4-mini",
+        "max_tokens": 32768,
+        "description": "baixo custo com boa qualidade",
         "temperature": 0.7
       },
       "smart": {
-        "model": "gpt-4o",
-        "max_tokens": 16384,
+        "model": "gpt-4.1",
+        "max_tokens": 65536,
         "description": "equilibrado",
         "temperature": 0.7
       },
       "smartest": {
-        "model": "o3-mini",
-        "max_tokens": 100000,
-        "description": "raciocínio profundo",
-        "is_o_model": true,
+        "model": "gpt-5.4",
+        "max_tokens": 131072,
+        "description": "modelo principal mais capaz",
         "temperature": 0.7
       },
       "absurdo": {
-        "model": "o3",
-        "max_tokens": 100000,
+        "model": "gpt-5.4-pro",
+        "max_tokens": 131072,
         "description": "máximo poder",
-        "is_o_model": true,
         "temperature": 0.7
       },
       "default": {
-        "model": "chatgpt-4o-latest",
-        "max_tokens": 8192,
+        "model": "gpt-5.4",
+        "max_tokens": 65536,
         "description": "padrão",
         "temperature": 0.7
       }
@@ -81,34 +79,33 @@
   "assistant": {
     "models": {
       "fast": {
-        "model": "gpt-4.1-nano",
+        "model": "gpt-5.4-nano",
         "max_tokens": 32768,
         "description": "rápido e econômico",
         "temperature": 0.7
       },
       "cheap": {
-        "model": "gpt-4o-mini",
-        "max_tokens": 8192,
-        "description": "rápido e econômico",
+        "model": "gpt-5.4-mini",
+        "max_tokens": 32768,
+        "description": "baixo custo com ferramentas",
         "temperature": 0.7
       },
       "smart": {
         "model": "gpt-4.1",
-        "max_tokens": 32768,
+        "max_tokens": 65536,
         "description": "equilibrado",
         "temperature": 0.7
       },
       "smartest": {
-        "model": "o3-mini",
-        "max_tokens": 100000,
-        "description": "Reasoning, mas nem tanto",
-        "is_o_model": true,
+        "model": "gpt-5.4",
+        "max_tokens": 131072,
+        "description": "modelo principal com ferramentas",
         "temperature": 0.7
       },
       "default": {
-        "model": "gpt-4.1",
-        "max_tokens": 32768,
-        "description": "Resposta padrão, mas não é de graça",
+        "model": "gpt-5.4-mini",
+        "max_tokens": 65536,
+        "description": "Responses API com ferramentas",
         "temperature": 0.7
       }
     }
@@ -326,37 +323,37 @@
   "gemini": {
     "models": {
       "fast": {
-        "model": "models/gemini-2.5-flash-lite",
+        "model": "gemini-2.5-flash-lite",
         "max_tokens": 8192,
         "description": "Resposta rápida e econômica",
         "temperature": 0.7
       },
       "cheap": {
-        "model": "models/gemini-2.0-flash-lite",
+        "model": "gemini-2.0-flash-lite",
         "max_tokens": 8192,
         "description": "Resposta rápida e econômica",
         "temperature": 0.7
       },
       "smart": {
-        "model": "models/gemini-1.5-pro-latest",
+        "model": "gemini-2.5-flash",
         "max_tokens": 32768,
         "description": "Equilíbrio entre custo e desempenho",
         "temperature": 0.7
       },
       "smartest": {
-        "model": "models/gemini-2.5-flash-latest",
+        "model": "gemini-2.5-pro",
         "max_tokens": 32768,
         "description": "Mais inteligente",
         "temperature": 0.7
       },
       "absurdo": {
-        "model": "models/gemini-2.5-pro-latest",
+        "model": "gemini-2.5-pro",
         "max_tokens": 32768,
         "description": "Melhor modelo não-raciocinante",
         "temperature": 0.7
       },
       "default": {
-        "model": "models/gemini-2.5-flash",
+        "model": "gemini-2.5-flash",
         "max_tokens": 32768,
         "description": "padrão",
         "temperature": 0.7
