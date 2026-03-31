@@ -34,6 +34,7 @@ class OpenAIProvider(BaseProvider):
 
     def _save_history(self, response_id):
         try:
+            self.history_file.parent.mkdir(parents=True, exist_ok=True)
             self.history_file.write_text(response_id)
         except Exception:
             pass
@@ -73,7 +74,7 @@ class OpenAIProvider(BaseProvider):
             if persistent == 'no':
                 print("Limpando conversa anterior")
                 self._delete_history()
-            else:
+            elif persistent == 'yes':
                 prev_id = self._load_history()
                 print(f"Continuando conversa id: {prev_id}", file=sys.stderr)
 
@@ -89,7 +90,7 @@ class OpenAIProvider(BaseProvider):
             if not is_o_model:
                 params["temperature"] = temperature
 
-            if persistent != 'no':
+            if persistent == 'yes':
                 params["store"] = True
                 if prev_id:
                     params["previous_response_id"] = prev_id
@@ -112,6 +113,8 @@ class OpenAIProvider(BaseProvider):
 
     def _extrair_texto_resposta(self, response):
         try:
+            if getattr(response, "output_text", None):
+                return response.output_text
             for item in response.output:
                 if item.content and len(item.content) > 0:
                     primeiro = item.content[0]
@@ -124,4 +127,4 @@ class OpenAIProvider(BaseProvider):
 
     def get_available_models(self):
         """Retorna modelos disponíveis"""
-        return ["gpt-4o-mini", "gpt-4o", "chatgpt-4o-latest", "o3-mini", "o3"]
+        return ["gpt-5.4-nano", "gpt-5.4-mini", "gpt-5.4", "gpt-5.4-pro", "gpt-4.1"]
